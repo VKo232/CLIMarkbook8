@@ -8,7 +8,6 @@ public class Student {
 	private ArrayList<Integer> marks;
 	private String first, last, number;
 	private double average;
-	private ArrayList<Boolean> completed;
 	
 	/**
 	 * constructor
@@ -19,7 +18,6 @@ public class Student {
 		last = "";
 		number = "";
 		average = 100;
-		completed = new ArrayList<Boolean>();
 	}
 	
 	/**
@@ -52,37 +50,7 @@ public class Student {
 		return average;
 	}
 	
-	/**
-	 * @param index which is assignment number starting from 0
-	 * @return boolean of whether it is completed or not
-	 */
-	public boolean getCompleted(int index) {
-		return completed.get(index);
-	}
-	
-	/**
-	 * sets the assignment at that index to be marked complete, or true
-	 * @param index 
-	 */
-	public void setCompleted(int index) {
-		completed.set(index, true);
-	}
-	
-	/**
-	 * adds a new assignment that is marked incomplete
-	 */
-	public void addIncomplete() {
-		completed.add(false);
-	}
-	
-	/**
-	 * removes an assignment
-	 * @param index for assignment to be removed
-	 */
-	public void removeAssignment(int index) {
-		completed.remove(index);
-	}
-	
+
 	/**
 	 * @return String of the student number
 	 */
@@ -123,14 +91,7 @@ public class Student {
 		return marks.size();
 	}
 	
-	/**
-	 * 
-	 * @return the amount of assignments there are
-	 */
-	public int getAssignmentSize() {
-		return completed.size();
-	}
-	
+
 	/**
 	 * sets the current student average
 	 */
@@ -138,7 +99,9 @@ public class Student {
 		int sum = 0;
 		if(marks.size() != 0) {
 			for(int i = 0; i < marks.size(); i++) {
-				sum += marks.get(i);
+				if(marks.get(i) != -1) {
+					sum += marks.get(i);
+				}
 			}
 			average = sum / (double) marks.size();
 		}
@@ -167,6 +130,6 @@ public class Student {
 	public void setLast(String last) {
 		this.last = last;
 	}
-	
+
 	
 }

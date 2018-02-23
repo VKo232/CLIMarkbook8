@@ -1,4 +1,7 @@
 import java.util.*;
+
+import javax.swing.JFileChooser;
+
 import java.io.*;
 
 public class Main {
@@ -8,8 +11,10 @@ public class Main {
     	
     	System.out.println("Welcome to the CLI Markbook");
     	do {
+    		load();
     		addStudent();
     		classAverage();
+    		
     		if(true) {
     			break;
     		}
@@ -96,11 +101,36 @@ public class Main {
 		classlist.get(classlist.size() - 1).setStudentNumber(input);
     }
     public static void save(String name) {
-    	
+    	try {
+			FileOutputStream fs = new FileOutputStream(name);
+			ObjectOutputStream obStream = new ObjectOutputStream(fs);
+			obStream.writeObject(classlist);
+			System.out.println("Saved~~");
+			obStream.close();
+			obStream.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
-    public static void load(String name) {
-    	
+	public static void load() {
+    	System.out.println("Which class file?");
+        JFileChooser fileChooser = new JFileChooser();
+        int returnVal = fileChooser.showOpenDialog(null);
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            try {
+				FileInputStream fs = new FileInputStream(fileChooser.getSelectedFile().getName());
+				ObjectInputStream obStream = new ObjectInputStream(fs);
+				classlist = (ArrayList<Student>) obStream.readObject();
+				System.out.println("Loaded~~");
+				obStream.close();
+				fs.close();
+			} catch (IOException | ClassNotFoundException e) {
+				System.out.println("\nFailed to load");
+			}
+
+        }
+        
     }
     
 }
