@@ -71,7 +71,7 @@ public class Main {
     }
     
     /**
-     * adds a new student initialized with 
+     * adds a new student initialized with name and number
      */
     public static void addStudent() {
     	Scanner sc = new Scanner(System.in);
