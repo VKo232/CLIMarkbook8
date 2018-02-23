@@ -3,7 +3,8 @@ import java.util.*;
 public class Hello {
     public static void main(String[] args) {
     	Scanner sc = new Scanner(System.in);
-        System.out.print("Hello worlds");
+        System.out.println("Hello worlds");
+        System.out.printf("%-20s %-20s%-20s%.2f", "Wewq" , "eqwe","hi" , 90.2323);
         ArrayList<Student> classlist = new ArrayList<Student>();
         
         while(true) {

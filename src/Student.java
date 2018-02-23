@@ -5,10 +5,10 @@ import java.util.ArrayList;
  * @author qwertyuiop1
  */
 public class Student {
-	ArrayList<Integer> marks;
-	String first, last, number;
-	double average;
-	ArrayList<Boolean> completed;
+	private ArrayList<Integer> marks;
+	private String first, last, number;
+	private double average;
+	private ArrayList<Boolean> completed;
 	
 	/**
 	 * constructor
