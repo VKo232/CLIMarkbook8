@@ -8,7 +8,7 @@ public class Student {
 	private ArrayList<Integer> marks;
 	private String first, last, number;
 	private double average;
-	
+	private static ArrayList<String> assignmentName;	
 	/**
 	 * constructor
 	 */
@@ -129,6 +129,22 @@ public class Student {
 	 */
 	public void setLast(String last) {
 		this.last = last;
+	}
+
+	public static String getAssignmentName(int index) {
+		return assignmentName.get(index);
+	}
+
+	public static void addAssignment(String name) {
+		assignmentName.add(name);
+	}
+	
+	public void editAssignmentName(int index, String name) {
+		assignmentName.set(index, name);
+	}
+	
+	public void removeAssignment(int index) {
+		assignmentName.remove(index);
 	}
 
 	
