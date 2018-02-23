@@ -6,6 +6,19 @@ public class Main {
     	System.out.println("Welcome to the CLI Markbook");
     	do {
     		
+    		if() {
+    			break;
+    		}
     	} while(true);
     }
+    
+    public static double calcAverage(ArrayList<Student> class) {
+    // to get the class avera
+    	
+    }
+    
+    public static void displayOptions() {
+    	
+    }
+    
 }
