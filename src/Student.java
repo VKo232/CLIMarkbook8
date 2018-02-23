@@ -136,10 +136,12 @@ public class Student {
 	 */
 	public void setAverage() {
 		int sum = 0;
-		for(int i = 0; i < marks.size(); i++) {
-			sum += marks.get(i);
+		if(marks.size() != 0) {
+			for(int i = 0; i < marks.size(); i++) {
+				sum += marks.get(i);
+			}
+			average = sum / (double) marks.size();
 		}
-		average = sum / (double) marks.size();
 	}
 	
 	/**

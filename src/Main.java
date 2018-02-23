@@ -8,7 +8,7 @@ public class Main {
     	
     	System.out.println("Welcome to the CLI Markbook");
     	do {
-    		classlist.add(new Student());
+    		addStudent();
     		classAverage();
     		if(true) {
     			break;
@@ -27,14 +27,15 @@ public class Main {
    			sum += classlist.get(i).getAverage();
    		}
    		
-  		System.out.println("Class Average: " + (sum / classlist.size()));
-  		System.out.printf("%-20s%-20s%-20s%s\n", "Last name", "First name", "Student number","Average");
+  		System.out.println("\nClass Average: " + (sum / classlist.size()));
+  		System.out.printf("%-20s%-20s%-20s%s\n", "Last name", "First name", "Student number", "Average");
   		
   		for(int i = 0; i < classlist.size(); i++) {
   			System.out.printf("%-20s%-20s%-20s%.2f\n", classlist.get(i).getLast(), classlist.get(i).getFirst(), classlist.get(i).getStudentNumber(), classlist.get(i).getAverage());
   		}
   		
     }
+    
     /**
      * simple bubble sort to change the array in alphabetical order last name
      */
@@ -56,12 +57,7 @@ public class Main {
     		}
     	}
     }
-    public static String getInput() {
-    	Scanner sc = new Scanner(System.in);
-    	String s = sc.nextLine();
-    	return s;
-    }
-    	
+
     public static void displayOptions() {
     	
     }
@@ -71,6 +67,39 @@ public class Main {
     }
     
     public static void callMethods() {
+    	
+    }
+    
+    /**
+     * adds a new student initialized with 
+     */
+    public static void addStudent() {
+    	Scanner sc = new Scanner(System.in);
+		classlist.add(new Student());
+		// set first name
+		System.out.print("Enter the first name of the student: ");
+		String input = sc.nextLine();
+		input = input.toLowerCase();
+		input = input.substring(0, 1).toUpperCase() + input.substring(1);
+		classlist.get(classlist.size() - 1).setFirst(input);
+		
+		// set last name
+		System.out.print("Enter the last name of the student: ");
+		input = sc.nextLine();
+		input = input.toLowerCase();
+		input = input.substring(0, 1).toUpperCase() + input.substring(1);
+		classlist.get(classlist.size() - 1).setLast(input);
+		
+		// student number
+		System.out.print("Enter the student number: ");
+		input  = sc.nextLine();
+		classlist.get(classlist.size() - 1).setStudentNumber(input);
+    }
+    public static void save(String name) {
+    	
+    }
+    
+    public static void load(String name) {
     	
     }
     
