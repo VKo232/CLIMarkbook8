@@ -7,8 +7,8 @@ import java.io.*;
 public class Main {
 	static ArrayList<Student> classlist = new ArrayList<Student>();
 	static String[][] options = { { "Reports", "Students", "Assignments", "Forgot Account", "Quit" },
-			{ "Class report", "Missing assignment", "At risk students", "Back" },
-			{ "Student list", "Add new student", "Remove student", "Student Information", "Edit mark", "Back" }, 
+			{ "Class report", "Missing assignments", "At risk students", "Back" },
+			{ "Add new student", "Remove student", "Student Information", "Edit mark", "Back" }, 
 			{ "Add assignment", "Remove assignment", "Rename assignment", "Change assignment weight", "Back" } };
 	static boolean done = false;
 
@@ -20,7 +20,24 @@ public class Main {
 				break;
 			}
 		} while (true);
+		System.out.println("Thank you for using group 8's services");
+	}
+	
+	public static void studentList () {
+		Scanner sc = new Scanner(System.in);
+		if (classlist.size() < 1) {
+			System.out.println("You have no students");
+			return;
+		}
+		System.out.printf("%-20s%-20s%-20s%s\n", "Last name", "First name", "Student number", "Average");
 
+		for (int i = 0; i < classlist.size(); i++) {
+			System.out.printf((i + 1) + "). %-20s%-20s%-20s" + classlist.get(i).getAverage() + "\n", classlist.get(i).getLast(), classlist.get(i).getFirst(),
+					classlist.get(i).getStudentNumber());
+		}
+		while(true) {
+			System.out.println("(num) Open up a student file? ");
+		}
 	}
 
 	/**
@@ -37,7 +54,8 @@ public class Main {
 		for (int i = 0; i < classlist.size(); i++) {
 			sum += classlist.get(i).getAverage();
 		}
-
+		
+		System.out.println("\nClass Size: " + classlist.size());
 		System.out.println("\nClass Average: " + (sum / classlist.size()));
 		System.out.println("Number of assignments: " + classlist.get(0).getMarkArray().size());
 		System.out.printf("%-20s%-20s%-20s%s\n", "Last name", "First name", "Student number", "Average");
@@ -65,6 +83,12 @@ public class Main {
 			System.out.println("Thats not a number");
 		}
 		int percent = Integer.parseInt(sc.nextLine());
+		classlist.get(0);
+		Student.addAssignment(name);
+		Student.addWeight(percent);
+		for(int i = 0; i < classlist.size(); i++) {
+			classlist.get(i).addMark(-1);
+		}
 	}
 
 	/**
@@ -95,6 +119,7 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 
 		// prints out the first set of possibilities
+		System.out.println();
 		for (int i = 0; i < options[0].length; i++) {
 			System.out.println((i + 1) + " " + options[0][i]);
 		}
@@ -114,7 +139,7 @@ public class Main {
 		} while (true);
 		if (choice1 == 5) {
 			done = true;
-			sc.close();
+			
 			return;
 		}
 		// shows second set of possibilities
@@ -137,11 +162,11 @@ public class Main {
 			}
 		} while (true);
 		if (choice2 == options[choice1].length) {
-			sc.close();
+			
 			return;
 		}
 		methodCall(choice1, choice2);
-		sc.close();
+		
 	}
 
 	private static void methodCall(int choice1, int choice2) {
@@ -157,10 +182,10 @@ public class Main {
 			addStudent();
 			break;
 		case 3:
-			;
+			addAssignment();
 			break;
 		case 4:
-			;
+			studentList();
 			break;
 		case 5:
 			;
@@ -192,10 +217,6 @@ public class Main {
 
 	}
 
-	public static void findPassword() {
-
-	}
-
 	/**
 	 * adds a new student initialized with name and number
 	 */
@@ -204,39 +225,50 @@ public class Main {
 		Scanner sc = new Scanner(System.in);
 		try {
 			do {
-				classlist.add(new Student());
+				
+				
 				// set first name
-				System.out.print("Enter the first name of the student: ");
-				String input = sc.nextLine();
-				input = input.toLowerCase();
-				input = input.substring(0, 1).toUpperCase() + input.substring(1);
-				classlist.get(classlist.size() - 1).setFirst(input);
+				System.out.print("\nEnter the first name of the student: ");
+				String first = sc.nextLine();
+				if(first.equalsIgnoreCase("quit")) {
+					return;
+				}
+				first = first.toLowerCase();
+				first = first.substring(0, 1).toUpperCase() + first.substring(1);
 
 				// set last name
 				System.out.print("Enter the last name of the student: ");
-				input = sc.nextLine();
-				input = input.toLowerCase();
-				input = input.substring(0, 1).toUpperCase() + input.substring(1);
-				classlist.get(classlist.size() - 1).setLast(input);
+				String last = sc.nextLine();
+				if(last.equalsIgnoreCase("quit")) {
+					return;
+				}
+				last = last.toLowerCase();
+				last = last.substring(0, 1).toUpperCase() + last.substring(1);
 
 				// student number
 				System.out.print("Enter the student number: ");
-				input = sc.nextLine();
-				classlist.get(classlist.size() - 1).setStudentNumber(input);
-
+				String number = sc.nextLine();
+				if(number.equalsIgnoreCase("quit")) {
+					return;
+				}
+				
+				classlist.add(new Student());
+				classlist.get(classlist.size() - 1).setFirst(first);
+				classlist.get(classlist.size() - 1).setLast(last);
+				classlist.get(classlist.size() - 1).setStudentNumber(number);
 				System.out.print("(y/n) Do you wish to add more? ");
 				do {
-					input = sc.nextLine();
-				} while (!input.equalsIgnoreCase("y") && !input.equalsIgnoreCase("n"));
+					number = sc.nextLine();
+				} while (!number.equalsIgnoreCase("y") && !number.equalsIgnoreCase("n"));
 
-				if (input.equalsIgnoreCase("n")) {
+				if (number.equalsIgnoreCase("n")) {
 					added = false;
 				}
 			} while (added);
 		} catch (StringIndexOutOfBoundsException e) {
 			addStudent();
 		}
-		sc.close();
+		
 	}
 
 	public static void save(String name) {

@@ -23,6 +23,7 @@ public class Student {
 		assignmentName = new ArrayList<String>();
 		weight = new ArrayList<Integer>();
 		totalCompletion = 0;
+		marks.ensureCapacity(weight.size());
 	}
 	
 	/**
@@ -105,10 +106,10 @@ public class Student {
 		if(marks.size() != 0) {
 			for(int i = 0; i < marks.size(); i++) {
 				if(marks.get(i) != -1) {
-					sum += marks.get(i);
+					sum += marks.get(i) * weight.get(i);
 				}
 			}
-			average = sum / (double) marks.size();
+			average = sum / (double) totalCompletion;
 		}
 	}
 	
@@ -142,6 +143,7 @@ public class Student {
 
 	public static void addAssignment(String name) {
 		assignmentName.add(name);
+		
 	}
 	
 	public void editAssignmentName(int index, String name) {
@@ -161,13 +163,15 @@ public class Student {
 
 	public void setWeight(int index, int percent) {
 		weight.set(index, percent);
+		setTotalCompletion();
 	}
 	
-	public void addWeight(int percent) {
+	public static void addWeight(int percent) {
 		weight.add(percent);
+		setTotalCompletion();
 	}
 	
-	public void setTotalCompletion() {
+	public static void setTotalCompletion() {
 		totalCompletion = 0;
 		for(int i = 0; i < weight.size(); i++) {
 			totalCompletion += weight.get(i);
