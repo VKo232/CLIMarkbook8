@@ -6,14 +6,18 @@ import java.io.*;
 
 public class Main {
 	static ArrayList<Student> classlist = new ArrayList<Student>();
-	static String[][] options = { { "Reports", "Students", "Assignments", "Forgot Account", "Quit" },
+	static String[][] options = { { "Reports", "Students", "Assignments", "Save", "Load", "Quit" },
 			{ "Class report", "Missing assignments", "At risk students", "Back" },
-			{ "Add new student", "Remove student", "Student Information", "Edit mark", "Back" }, 
-			{ "Add assignment", "Remove assignment", "Rename assignment", "Change assignment weight", "Back" } };
+			{ "Add new student", "Remove student", "Student Information", "Forgot Student Account", "Back" }, 
+			{ "Add assignment", "Remove assignment", "Rename assignment", "Change assignment weight","Marks for assignment", "Back" } };
 	static boolean done = false;
+
+
 
 	public static void main(String[] args) {
 		System.out.println("Welcome to the CLI Markbook of group 8\n");
+
+
 		do {
 			displayOptions();
 			if (done) {
@@ -21,6 +25,55 @@ public class Main {
 			}
 		} while (true);
 		System.out.println("Thank you for using group 8's services");
+	}
+
+	public static void chooseStudent() {
+		Scanner sc = new Scanner(System.in);
+		studentList();
+		int student;
+		student = readInt("Which student would you like to view information for? ", 1, classlist.size());
+		if(student == -2) {
+			return;
+		}
+		displayStudent(student - 1);
+		editStudentMark(student - 1);
+	}
+	public static void editStudentMark(int index) {
+		Scanner sc = new Scanner(System.in);
+		int choice;
+		int mark;
+		while (true) {
+			System.out.print("(y/n) Would you like to edit the student's mark? ");
+			if(sc.hasNext("n")) {
+				sc.nextLine();
+				break;
+			}
+			displayStudent(index);
+			choice = readInt("Which assignment? ", 1, Student.getAssignmentSize());
+			if(choice == -2) {
+				return;
+			} 
+			mark = readInt("What mark? (-1 for incomplete): ", -1, 100);
+			if(mark == -2) {
+				continue;
+			}
+			classlist.get(index).editMark(choice, mark);
+		}
+	}
+	
+	public static void displayStudent(int index) {
+		System.out.println("\nAssignment report for: " + classlist.get(index).getFirst() + " " + classlist.get(index).getLast() + " " + classlist.get(index).getStudentNumber());
+		System.out.println("Total course completed: " + Student.getTotalCompletion() + "%");
+		System.out.println("Average: " + classlist.get(index).getAverage());
+		System.out.printf("%-20s%-20s%-20s%-30s\n", "Name of assignment", "Mark Received (%)", "Weight (%)", "Percent on final mark");
+		for(int i = 0; i < classlist.get(index).getMarkArray().size(); i++) {
+			if(classlist.get(index).getMark(i) == -1) {
+				System.out.printf((i + 1) + ". %-20s%-20s%-20s%-30s\n", Student.getAssignmentName(i), "Incomplete", Student.getWeight(i) + "%", "0");
+			} else {
+				System.out.printf((i + 1) + ". %-20s%-20s%-20s%-30s\n", Student.getAssignmentName(i), classlist.get(index).getMark(i) + "%", Student.getWeight(i) + "%", classlist.get(index).getMark(i) * Student.getWeight(i) / 100.0);
+		
+			}
+		}
 	}
 	
 	public static void studentList () {
@@ -35,15 +88,15 @@ public class Main {
 			System.out.printf((i + 1) + "). %-20s%-20s%-20s" + classlist.get(i).getAverage() + "\n", classlist.get(i).getLast(), classlist.get(i).getFirst(),
 					classlist.get(i).getStudentNumber());
 		}
-		while(true) {
-			System.out.println("(num) Open up a student file? ");
-		}
+
 	}
 
+	
 	/**
 	 * Calculates and displays the class average
 	 */
 	public static void classAverage() {
+
 		if (classlist.size() < 1) {
 			System.out.println("You have no students");
 			return;
@@ -66,6 +119,9 @@ public class Main {
 		}
 
 	}
+	
+	
+	
 	public static void addAssignment() {
 		Scanner sc = new Scanner(System.in);
 		if(classlist.size() < 1) {
@@ -75,7 +131,7 @@ public class Main {
 		System.out.print("What is the name of your new assignment? ");
 		String name = sc.nextLine();
 		if(name.equals("")) {
-			name = "unnamed";
+			name = "Unnamed Assignment";
 		}
 		System.out.print("What percent of the final mark will it be? ");
 		while (!sc.hasNextInt()) {
@@ -91,6 +147,8 @@ public class Main {
 		}
 	}
 
+	
+	
 	/**
 	 * simple bubble sort to change the array in alphabetical order last name
 	 */
@@ -114,6 +172,8 @@ public class Main {
 		}
 	}
 
+	
+	
 	public static void displayOptions() {
 		int choice1, choice2;
 		Scanner sc = new Scanner(System.in);
@@ -124,37 +184,35 @@ public class Main {
 			System.out.println((i + 1) + " " + options[0][i]);
 		}
 		// takes in a user input
-		System.out.print("(num) Whats your choice: ");
 		do {
-			while (!sc.hasNextInt()) {
-				sc.nextLine();
-				System.out.println("Thats not a number");
-			}
-			choice1 = Integer.parseInt(sc.nextLine());
+				choice1 = readInt("(num) Whats your choice: ");
 			if (choice1 <= options[0].length && choice1 > 0) {
 				break;
 			} else {
 				System.out.println("Invalid choice");
 			}
 		} while (true);
-		if (choice1 == 5) {
-			done = true;
-			
+		if (choice1 == 6) {
+			done = true;		
+			return;
+		} else if (choice1 == 5) {
+			load();
+			return;
+		} else if (choice1 == 4) {
+			save();
 			return;
 		}
+		
 		// shows second set of possibilities
 		System.out.println("\nHere are your options");
 		for (int i = 0; i < options[choice1].length; i++) {
 			System.out.println((i + 1) + " " + options[choice1][i]);
 		}
+		
 		// gets user input
-		System.out.print("(num) Whats your choice: ");
 		do {
-			while (!sc.hasNextInt()) {
-				sc.nextLine();
-				System.out.println("Thats not a number");
-			}
-			choice2 = Integer.parseInt(sc.nextLine());
+			
+			choice2 = readInt("(num) Whats your choice: ");
 			if (choice2 <= options[choice1].length && choice2 > 0) {
 				break;
 			} else {
@@ -162,13 +220,13 @@ public class Main {
 			}
 		} while (true);
 		if (choice2 == options[choice1].length) {
-			
 			return;
 		}
 		methodCall(choice1, choice2);
-		
 	}
 
+	
+	
 	private static void methodCall(int choice1, int choice2) {
 		int call = choice2;
 		for (int i = 1; i < choice1; i++) {
@@ -179,25 +237,25 @@ public class Main {
 			classAverage();
 			break;
 		case 2:
-			addStudent();
+			
 			break;
 		case 3:
 			addAssignment();
 			break;
 		case 4:
-			studentList();
+			addStudent();
 			break;
 		case 5:
-			;
+			save();
 			break;
 		case 6:
-			;
+			load();
 			break;
 		case 7:
-			;
+			chooseStudent();
 			break;
 		case 8:
-			;
+			displayStudent(0);
 			break;
 		case 9:
 			;
@@ -217,6 +275,8 @@ public class Main {
 
 	}
 
+	
+	
 	/**
 	 * adds a new student initialized with name and number
 	 */
@@ -230,7 +290,7 @@ public class Main {
 				// set first name
 				System.out.print("\nEnter the first name of the student: ");
 				String first = sc.nextLine();
-				if(first.equalsIgnoreCase("quit")) {
+				if(first.equalsIgnoreCase("back")) {
 					return;
 				}
 				first = first.toLowerCase();
@@ -239,7 +299,7 @@ public class Main {
 				// set last name
 				System.out.print("Enter the last name of the student: ");
 				String last = sc.nextLine();
-				if(last.equalsIgnoreCase("quit")) {
+				if(last.equalsIgnoreCase("back")) {
 					return;
 				}
 				last = last.toLowerCase();
@@ -248,7 +308,7 @@ public class Main {
 				// student number
 				System.out.print("Enter the student number: ");
 				String number = sc.nextLine();
-				if(number.equalsIgnoreCase("quit")) {
+				if(number.equalsIgnoreCase("back")) {
 					return;
 				}
 				
@@ -271,36 +331,70 @@ public class Main {
 		
 	}
 
-	public static void save(String name) {
+	public static int readInt(String prompt, int start, int end) {
+		Scanner sc = new Scanner(System.in); 
+		int choice;
+		System.out.print(prompt);
+		while (true) {
 		try {
-			FileOutputStream fs = new FileOutputStream(name);
+			do {
+				while (!sc.hasNextInt()) {
+					sc.nextLine();
+					System.out.println("Thats not a number");
+					}
+					if(sc.hasNext("back")) {
+						return -2;
+					}
+					choice = Integer.parseInt(sc.nextLine());
+					if(choice == -2) {
+						return -1;
+					} else if(choice >= start && choice <= end) {
+						return choice;
+					} else {
+						System.out.print("\n" + prompt);
+					}
+				} while (true);
+			} catch(NumberFormatException e) {
+			
+			}
+		}
+		
+	}
+	
+	
+	public static void save() {
+		Scanner sc = new Scanner(System.in);
+		System.out.print("\nWhat will you name your file? ");
+		String name = sc.nextLine();
+		try {
+			FileOutputStream fs = new FileOutputStream(new File(name));
 			ObjectOutputStream obStream = new ObjectOutputStream(fs);
 			obStream.writeObject(classlist);
 			System.out.println("Saved~~");
 			obStream.close();
-			obStream.close();
+			fs.close();
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Error");
 		}
 	}
 
+	
+	
 	public static void load() {
-		System.out.println("Which class file?");
-		JFileChooser fileChooser = new JFileChooser();
-		int returnVal = fileChooser.showOpenDialog(null);
-		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			try {
-				FileInputStream fs = new FileInputStream(fileChooser.getSelectedFile().getName());
-				ObjectInputStream obStream = new ObjectInputStream(fs);
-				classlist = (ArrayList<Student>) obStream.readObject();
-				System.out.println("Loaded~~");
-				obStream.close();
-				fs.close();
-			} catch (IOException | ClassNotFoundException e) {
-				System.out.println("\nFailed to load");
-			}
-
+		Scanner sc = new Scanner(System.in);
+		System.out.print("Which class file? ");
+		String file = sc.nextLine();
+		try {
+			FileInputStream fs = new FileInputStream(file);
+			ObjectInputStream obStream = new ObjectInputStream(fs);
+			classlist = (ArrayList<Student>) obStream.readObject();
+			System.out.println("Loaded~~");
+			obStream.close();
+			fs.close();
+		} catch (IOException | ClassNotFoundException e) {
+			System.out.println("\nFailed to load");
 		}
+
 
 	}
 

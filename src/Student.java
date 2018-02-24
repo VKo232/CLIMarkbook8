@@ -1,10 +1,15 @@
+import java.io.Serializable;
 import java.util.ArrayList;
 
 /**
  * an object that stores all the values of the student
  * @author qwertyuiop1
  */
-public class Student {
+public class Student implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private ArrayList<Integer> marks;
 	private String first, last, number;
 	private double average;
@@ -157,7 +162,7 @@ public class Student {
 		return marks;
 	}
 
-	public int getWeight(int index) {
+	public static int getWeight(int index) {
 		return weight.get(index);
 	}
 
@@ -178,8 +183,11 @@ public class Student {
 		}
 		
 	}
-	public int getTotalCompletion() {
+	public static int getTotalCompletion() {
 		return totalCompletion;
+	}
+	public static int getAssignmentSize() {
+		return weight.size();
 	}
 	
 }
