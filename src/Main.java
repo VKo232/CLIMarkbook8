@@ -215,16 +215,16 @@ public class Main {
 			addStudent();
 			break;
 		case 5:
-			save();
+			;
 			break;
 		case 6:
-			load();
-			break;
-		case 7:
 			chooseStudent();
 			break;
+		case 7:
+			;
+			break;
 		case 8:
-			displayStudent(0);
+			addAssignment();
 			break;
 		case 9:
 			;
