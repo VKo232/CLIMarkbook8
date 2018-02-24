@@ -10,23 +10,23 @@ public class Student implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private ArrayList<Integer> marks;
+	private ArrayList<Double> marks;
 	private String first, last, number;
 	private double average;
 	private static ArrayList<String> assignmentName;
-	private static ArrayList<Integer> weight;
+	private static ArrayList<Double> weight;
 	private static int totalCompletion;
 	/**
 	 * constructor
 	 */
 	public Student() {
-		marks = new ArrayList<Integer>();
+		marks = new ArrayList<Double>();
 		first = "";
 		last = "";
 		number = "";
 		average = 100;
 		assignmentName = new ArrayList<String>();
-		weight = new ArrayList<Integer>();
+		weight = new ArrayList<Double>();
 		totalCompletion = 0;
 		marks.ensureCapacity(weight.size());
 	}
@@ -35,7 +35,7 @@ public class Student implements Serializable{
 	 * @param index
 	 * @return int mark at the current index
 	 */
-	public int getMark(int index) {
+	public double getMark(int index) {
 		return marks.get(index);
 	}
 	
@@ -73,7 +73,7 @@ public class Student implements Serializable{
 	 * adds a new mark 
 	 * @param input
 	 */
-	public void addMark(int input) {
+	public void addMark(double input) {
 		marks.add(input);
 	}
 	
@@ -90,7 +90,7 @@ public class Student implements Serializable{
 	 * @param index int
 	 * @param mark int
 	 */
-	public void editMark(int index, int mark) {
+	public void editMark(int index, double mark) {
 		marks.set(index, mark);
 	}
 	
@@ -158,20 +158,20 @@ public class Student implements Serializable{
 	public void removeAssignment(int index) {
 		assignmentName.remove(index);
 	}
-	public ArrayList<Integer> getMarkArray() {
+	public ArrayList<Double> getMarkArray() {
 		return marks;
 	}
 
-	public static int getWeight(int index) {
+	public static double getWeight(int index) {
 		return weight.get(index);
 	}
 
-	public void setWeight(int index, int percent) {
+	public void setWeight(int index, double percent) {
 		weight.set(index, percent);
 		setTotalCompletion();
 	}
 	
-	public static void addWeight(int percent) {
+	public static void addWeight(double percent) {
 		weight.add(percent);
 		setTotalCompletion();
 	}

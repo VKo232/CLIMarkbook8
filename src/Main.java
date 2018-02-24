@@ -3,17 +3,14 @@ import java.io.*;
 
 public class Main {
 	static ArrayList<Student> classlist = new ArrayList<Student>();
-	static String[][] options = { { "Reports", "Students", "Assignments", "Save", "Load", "Quit" },
-			{ "Class report", "Missing assignments", "At risk students"},
-			{ "Add new student", "Remove student", "Student Information", "Forgot Student Account"}, 
-			{ "Add assignment", "Remove assignment", "Rename assignment", "Change assignment weight","Marks for assignment"} };
+	static String[][] options; 
 	static boolean done = false;
 
 
 
 	public static void main(String[] args) {
 		System.out.println("Welcome to the CLI Markbook of group 8\n");
-
+		init();
 
 		do {
 			displayOptions();
@@ -24,33 +21,35 @@ public class Main {
 		System.out.println("Thank you for using group 8's services");
 	}
 
+	
+
 	public static void chooseStudent() {
-		Scanner sc = new Scanner(System.in);
 		studentList();
 		int student;
-		student = readInt("Which student would you like to view information for? ", 1, classlist.size());
+		student = (int) readDouble("Which student would you like to view information for? ", 1, classlist.size());
 		if(student == -2) {
 			return;
 		}
 		displayStudent(student - 1);
 		editStudentMark(student - 1);
 	}
+	
 	public static void editStudentMark(int index) {
-		Scanner sc = new Scanner(System.in);
 		int choice;
-		int mark;
+		double mark;
 		while (true) {
-			System.out.print("(y/n) Would you like to edit the student's mark? ");
-			if(sc.hasNext("n")) {
-				sc.nextLine();
-				break;
+			String check = readString("(y/n) Would you like to edit the student's mark? ");
+			if (check.equalsIgnoreCase("n")) {
+				return;
 			}
+			
 			displayStudent(index);
-			choice = readInt("Which assignment? ", 1, Student.getAssignmentSize());
+			choice = (int) readDouble("Which assignment? ", 1, Student.getAssignmentSize());
 			if(choice == -2) {
 				return;
-			} 
-			mark = readInt("What mark? (-1 for incomplete): ", -1, 100);
+			}
+			
+			mark = readDouble("What mark? (-1 for incomplete): ", -1, 100);
 			if(mark == -2) {
 				continue;
 			}
@@ -118,22 +117,12 @@ public class Main {
 	
 	
 	public static void addAssignment() {
-		Scanner sc = new Scanner(System.in);
 		if(classlist.size() < 1) {
 			System.out.println("Add students in the class first!");
 			return;
 		}
-		System.out.print("What is the name of your new assignment? ");
-		String name = sc.nextLine();
-		if(name.equals("")) {
-			name = "Unnamed Assignment";
-		}
-		System.out.print("What percent of the final mark will it be? ");
-		while (!sc.hasNextInt()) {
-			sc.nextLine();
-			System.out.println("Thats not a number");
-		}
-		int percent = Integer.parseInt(sc.nextLine());
+		String name = readString("What is the name of your new assignment? ");
+		double percent = readDouble("How much will the assignment weigh? %", 0, 100);
 		classlist.get(0);
 		Student.addAssignment(name);
 		Student.addWeight(percent);
@@ -179,7 +168,7 @@ public class Main {
 		}
 		
 		// takes in a user input
-		choice1 = readInt("(num) Whats your choice: ", 1, options.length);
+		choice1 = (int) readDouble("(num) Whats your choice: ", 1, options.length);
 		if (choice1 == 6) {
 			done = true;		
 			return;
@@ -198,7 +187,7 @@ public class Main {
 		}
 		
 		// gets user input
-		choice2 = readInt("(num) Whats your choice: ", 1, options[choice1].length);
+		choice2 = (int) readDouble("(num) Whats your choice: ", 1, options[choice1].length);
 		if (choice2 == -2) {
 			return;
 		}
@@ -290,6 +279,8 @@ public class Main {
 		}
 
 	}
+	
+
 	public static String readString(String prompt) {
 		Scanner sc = new Scanner(System.in);
 		String input;
@@ -302,9 +293,9 @@ public class Main {
 		return input;
 	}
 	
-	public static int readInt(String prompt, int start, int end) {
+	public static double readDouble(String prompt, int start, int end) {
 		Scanner sc = new Scanner(System.in); 
-		int choice;
+		double choice;
 		while (true) {
 			try {
 				do {
@@ -318,7 +309,7 @@ public class Main {
 						System.out.println("Thats not a number\n" + "enter (back) if you want to exit");
 					}
 
-					choice = Integer.parseInt(sc.nextLine());
+					choice = Double.parseDouble(sc.nextLine());
 					if (choice == -2) {
 						return -1;
 					} else if (choice >= start && choice <= end) {
@@ -333,7 +324,15 @@ public class Main {
 		}
 
 	}
-	
+
+	private static void init() {
+		options = new String[][] {
+				{ "Reports", "Students", "Assignments", "Save", "Load", "Quit" },
+				{ "Class report", "Missing assignments", "At risk students"},
+				{ "Add new student", "Remove student", "Student Information", "Forgot Student Account"}, 
+				{ "Add assignment", "Remove assignment", "Rename assignment", "Change assignment weight","Marks for assignment"} 
+				};
+	}
 	
 	public static void save() {
 		String name = readString("\nWhat will you name your file? ");
