@@ -8,7 +8,9 @@ public class Student {
 	private ArrayList<Integer> marks;
 	private String first, last, number;
 	private double average;
-	private static ArrayList<String> assignmentName;	
+	private static ArrayList<String> assignmentName;
+	private static ArrayList<Integer> weight;
+	private static int totalCompletion;
 	/**
 	 * constructor
 	 */
@@ -18,6 +20,9 @@ public class Student {
 		last = "";
 		number = "";
 		average = 100;
+		assignmentName = new ArrayList<String>();
+		weight = new ArrayList<Integer>();
+		totalCompletion = 0;
 	}
 	
 	/**
@@ -146,6 +151,31 @@ public class Student {
 	public void removeAssignment(int index) {
 		assignmentName.remove(index);
 	}
+	public ArrayList<Integer> getMarkArray() {
+		return marks;
+	}
 
+	public int getWeight(int index) {
+		return weight.get(index);
+	}
+
+	public void setWeight(int index, int percent) {
+		weight.set(index, percent);
+	}
+	
+	public void addWeight(int percent) {
+		weight.add(percent);
+	}
+	
+	public void setTotalCompletion() {
+		totalCompletion = 0;
+		for(int i = 0; i < weight.size(); i++) {
+			totalCompletion += weight.get(i);
+		}
+		
+	}
+	public int getTotalCompletion() {
+		return totalCompletion;
+	}
 	
 }
