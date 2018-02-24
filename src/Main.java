@@ -168,7 +168,7 @@ public class Main {
 		}
 		
 		// takes in a user input
-		choice1 = (int) readDouble("(num) Whats your choice: ", 1, options.length);
+		choice1 = (int) readDouble("(num) Whats your choice: ", 1, options[0].length);
 		if (choice1 == 6) {
 			done = true;		
 			return;
@@ -177,6 +177,8 @@ public class Main {
 			return;
 		} else if (choice1 == 4) {
 			save();
+			return;
+		} else if(choice1 == -2) {
 			return;
 		}
 		
@@ -199,7 +201,7 @@ public class Main {
 	private static void methodCall(int choice1, int choice2) {
 		int call = choice2;
 		for (int i = 1; i < choice1; i++) {
-			call += options[i].length - 1;
+			call += options[i].length;
 		}
 		switch (call) {
 		case 1:
@@ -209,7 +211,7 @@ public class Main {
 			
 			break;
 		case 3:
-			addAssignment();
+			;
 			break;
 		case 4:
 			addStudent();
@@ -250,7 +252,7 @@ public class Main {
 	 * adds a new student initialized with name and number
 	 */
 	public static void addStudent() {
-		String[] addStudentPrompts = { "\nEnter the first name of the student: ", "Enter the last name of the student: ", "Enter the student number: "};
+		String[] addStudentPrompts = { "\nEnter the first name of the student: ", "\nEnter the last name of the student: ", "\nEnter the student number: "};
 		String[] addStudentInfo = new String[3]; 
 		String input;
 		for(int i = 0; i < addStudentPrompts.length; i++) {
@@ -289,7 +291,8 @@ public class Main {
 			System.out.print(">>> ");
 			input = sc.nextLine();
 			input = input.trim();
-		} while(input.length() != 0);
+		} while(input.length() == 0);
+		sc.close();
 		return input;
 	}
 	
@@ -302,10 +305,10 @@ public class Main {
 					System.out.println("\n" + prompt + "\n");
 					System.out.print(">>> ");
 					while (!sc.hasNextInt()) {
-						sc.nextLine();
 						if (sc.hasNext("back")) {
 							return -2;
 						}
+						sc.nextLine();
 						System.out.println("Thats not a number\n" + "enter (back) if you want to exit");
 					}
 
@@ -313,6 +316,7 @@ public class Main {
 					if (choice == -2) {
 						return -1;
 					} else if (choice >= start && choice <= end) {
+						sc.close();
 						return choice;
 					} else {
 						System.out.println("Invalid choice");
@@ -350,15 +354,14 @@ public class Main {
 
 	
 	
+	@SuppressWarnings("unchecked")
 	public static void load() {
 		String file = readString("\nWhich class file? ");
 		try {
 			FileInputStream fs = new FileInputStream(file);
 			ObjectInputStream obStream = new ObjectInputStream(fs);
-			Object obj = obStream.readObject();
-			if (obj instanceof ArrayList) {
-				obj = classlist;
-			}
+			classlist = (ArrayList<Student>) obStream.readObject();
+
 			System.out.println("Loaded~~");
 			obStream.close();
 			fs.close();
