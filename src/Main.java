@@ -1,7 +1,4 @@
 import java.util.*;
-
-import javax.swing.JFileChooser;
-
 import java.io.*;
 
 public class Main {
@@ -77,7 +74,6 @@ public class Main {
 	}
 	
 	public static void studentList () {
-		Scanner sc = new Scanner(System.in);
 		if (classlist.size() < 1) {
 			System.out.println("You have no students");
 			return;
@@ -85,8 +81,7 @@ public class Main {
 		System.out.printf("%-20s%-20s%-20s%s\n", "Last name", "First name", "Student number", "Average");
 
 		for (int i = 0; i < classlist.size(); i++) {
-			System.out.printf((i + 1) + "). %-20s%-20s%-20s" + classlist.get(i).getAverage() + "\n", classlist.get(i).getLast(), classlist.get(i).getFirst(),
-					classlist.get(i).getStudentNumber());
+			System.out.printf((i + 1) + "). %-20s%-20s%-20s" + classlist.get(i).getAverage() + "\n", classlist.get(i).getLast(), classlist.get(i).getFirst(), classlist.get(i).getStudentNumber());
 		}
 
 	}
@@ -266,61 +261,43 @@ public class Main {
 	 * adds a new student initialized with name and number
 	 */
 	public static void addStudent() {
-		boolean added = true;
-		Scanner sc = new Scanner(System.in);
-		try {
-			do {
-				
-				
-				// set first name
-				System.out.print("\nEnter the first name of the student: ");
-				String first = sc.nextLine();
-				if(first.equalsIgnoreCase("back")) {
+		String[] addStudentPrompts = { "\nEnter the first name of the student: ", "Enter the last name of the student: ", "Enter the student number: "};
+		String[] addStudentInfo = new String[3]; 
+		String input;
+		for(int i = 0; i < addStudentPrompts.length; i++) {
+			addStudentInfo[i] = readString(addStudentPrompts[i]);
+			if(addStudentInfo[i].equalsIgnoreCase("back")) {
+				if(i == 0) {
 					return;
+				} else {
+					continue;
 				}
-				first = first.toLowerCase();
-				first = first.substring(0, 1).toUpperCase() + first.substring(1);
+			}
+			addStudentInfo[i] = addStudentInfo[i].toLowerCase();
+			addStudentInfo[i] = addStudentInfo[i].substring(0, 1).toUpperCase() + addStudentInfo[i].substring(1);
+		}
 
-				// set last name
-				System.out.print("Enter the last name of the student: ");
-				String last = sc.nextLine();
-				if(last.equalsIgnoreCase("back")) {
-					return;
-				}
-				last = last.toLowerCase();
-				last = last.substring(0, 1).toUpperCase() + last.substring(1);
-
-				// student number
-				System.out.print("Enter the student number: ");
-				String number = sc.nextLine();
-				if(number.equalsIgnoreCase("back")) {
-					return;
-				}
-				
-				classlist.add(new Student());
-				classlist.get(classlist.size() - 1).setFirst(first);
-				classlist.get(classlist.size() - 1).setLast(last);
-				classlist.get(classlist.size() - 1).setStudentNumber(number);
-				System.out.print("(y/n) Do you wish to add more? ");
-				do {
-					number = sc.nextLine();
-				} while (!number.equalsIgnoreCase("y") && !number.equalsIgnoreCase("n"));
-
-				if (number.equalsIgnoreCase("n")) {
-					added = false;
-				}
-			} while (added);
-		} catch (StringIndexOutOfBoundsException e) {
+		classlist.add(new Student());
+		classlist.get(classlist.size() - 1).setFirst(addStudentInfo[0]);
+		classlist.get(classlist.size() - 1).setLast(addStudentInfo[1]);
+		classlist.get(classlist.size() - 1).setStudentNumber(addStudentInfo[2]);
+		sortAlphabetically();
+		do {
+			input = readString("(y/n) Do you wish to add more? ");
+		} while (!input.equalsIgnoreCase("y") && !input.equalsIgnoreCase("n"));
+		if (input.equalsIgnoreCase("y")) {
 			addStudent();
 		}
-		
+
 	}
 	public static String readString(String prompt) {
 		Scanner sc = new Scanner(System.in);
 		String input;
 		do {
-		input = sc.nextLine();
-		input = input.trim();
+			System.out.println(prompt + "\n");
+			System.out.print(">>> ");
+			input = sc.nextLine();
+			input = input.trim();
 		} while(input.length() != 0);
 		return input;
 	}
@@ -328,38 +305,38 @@ public class Main {
 	public static int readInt(String prompt, int start, int end) {
 		Scanner sc = new Scanner(System.in); 
 		int choice;
-		System.out.print(prompt);
 		while (true) {
-		try {
-			do {
-				while (!sc.hasNextInt()) {
-					sc.nextLine();
-					System.out.println("Thats not a number");
+			try {
+				do {
+					System.out.println("\n" + prompt + "\n");
+					System.out.print(">>> ");
+					while (!sc.hasNextInt()) {
+						sc.nextLine();
+						if (sc.hasNext("back")) {
+							return -2;
+						}
+						System.out.println("Thats not a number\n" + "enter (back) if you want to exit");
 					}
-					if(sc.hasNext("back")) {
-						return -2;
-					}
+
 					choice = Integer.parseInt(sc.nextLine());
-					if(choice == -2) {
+					if (choice == -2) {
 						return -1;
-					} else if(choice >= start && choice <= end) {
+					} else if (choice >= start && choice <= end) {
 						return choice;
 					} else {
-						System.out.print("\n" + prompt);
+						System.out.println("Invalid choice");
 					}
 				} while (true);
-			} catch(NumberFormatException e) {
-			
+			} catch (NumberFormatException e) {
+				System.out.println("Invalid input!!!");
 			}
 		}
-		
+
 	}
 	
 	
 	public static void save() {
-		Scanner sc = new Scanner(System.in);
-		System.out.print("\nWhat will you name your file? ");
-		String name = sc.nextLine();
+		String name = readString("\nWhat will you name your file? ");
 		try {
 			FileOutputStream fs = new FileOutputStream(new File(name));
 			ObjectOutputStream obStream = new ObjectOutputStream(fs);
@@ -375,9 +352,7 @@ public class Main {
 	
 	
 	public static void load() {
-		Scanner sc = new Scanner(System.in);
-		System.out.print("Which class file? ");
-		String file = sc.nextLine();
+		String file = readString("\nWhich class file? ");
 		try {
 			FileInputStream fs = new FileInputStream(file);
 			ObjectInputStream obStream = new ObjectInputStream(fs);
