@@ -7,9 +7,9 @@ import java.io.*;
 public class Main {
 	static ArrayList<Student> classlist = new ArrayList<Student>();
 	static String[][] options = { { "Reports", "Students", "Assignments", "Save", "Load", "Quit" },
-			{ "Class report", "Missing assignments", "At risk students", "Back" },
-			{ "Add new student", "Remove student", "Student Information", "Forgot Student Account", "Back" }, 
-			{ "Add assignment", "Remove assignment", "Rename assignment", "Change assignment weight","Marks for assignment", "Back" } };
+			{ "Class report", "Missing assignments", "At risk students"},
+			{ "Add new student", "Remove student", "Student Information", "Forgot Student Account"}, 
+			{ "Add assignment", "Remove assignment", "Rename assignment", "Change assignment weight","Marks for assignment"} };
 	static boolean done = false;
 
 
@@ -176,22 +176,15 @@ public class Main {
 	
 	public static void displayOptions() {
 		int choice1, choice2;
-		Scanner sc = new Scanner(System.in);
 
 		// prints out the first set of possibilities
 		System.out.println();
 		for (int i = 0; i < options[0].length; i++) {
 			System.out.println((i + 1) + " " + options[0][i]);
 		}
+		
 		// takes in a user input
-		do {
-				choice1 = readInt("(num) Whats your choice: ");
-			if (choice1 <= options[0].length && choice1 > 0) {
-				break;
-			} else {
-				System.out.println("Invalid choice");
-			}
-		} while (true);
+		choice1 = readInt("(num) Whats your choice: ", 1, options.length);
 		if (choice1 == 6) {
 			done = true;		
 			return;
@@ -210,16 +203,8 @@ public class Main {
 		}
 		
 		// gets user input
-		do {
-			
-			choice2 = readInt("(num) Whats your choice: ");
-			if (choice2 <= options[choice1].length && choice2 > 0) {
-				break;
-			} else {
-				System.out.println("Invalid choice");
-			}
-		} while (true);
-		if (choice2 == options[choice1].length) {
+		choice2 = readInt("(num) Whats your choice: ", 1, options[choice1].length);
+		if (choice2 == -2) {
 			return;
 		}
 		methodCall(choice1, choice2);
@@ -330,7 +315,16 @@ public class Main {
 		}
 		
 	}
-
+	public static String readString(String prompt) {
+		Scanner sc = new Scanner(System.in);
+		String input;
+		do {
+		input = sc.nextLine();
+		input = input.trim();
+		} while(input.length() != 0);
+		return input;
+	}
+	
 	public static int readInt(String prompt, int start, int end) {
 		Scanner sc = new Scanner(System.in); 
 		int choice;
@@ -387,7 +381,10 @@ public class Main {
 		try {
 			FileInputStream fs = new FileInputStream(file);
 			ObjectInputStream obStream = new ObjectInputStream(fs);
-			classlist = (ArrayList<Student>) obStream.readObject();
+			Object obj = obStream.readObject();
+			if (obj instanceof ArrayList) {
+				obj = classlist;
+			}
 			System.out.println("Loaded~~");
 			obStream.close();
 			fs.close();
