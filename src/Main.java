@@ -24,6 +24,10 @@ public class Main {
 	
 
 	public static void chooseStudent() {
+		if (classlist.size() < 1) {
+			System.out.println("You have no students");
+			return;
+		}
 		studentList();
 		int student;
 		student = (int) readDouble("Which student would you like to view information for? ", 1, classlist.size());
@@ -58,7 +62,11 @@ public class Main {
 	}
 	
 	public static void displayStudent(int index) {
-		System.out.println("\nAssignment report for: " + classlist.get(index).getFirst() + " " + classlist.get(index).getLast() + " " + classlist.get(index).getStudentNumber());
+		if (Student.getAssignmentSize() < 1) {
+			System.out.println("There are currently no assignments");
+			return;
+		}
+		System.out.println("\n                  Assignment report for: " + classlist.get(index).getFirst() + " " + classlist.get(index).getLast() + " " + classlist.get(index).getStudentNumber());
 		System.out.println("Total course completed: " + Student.getTotalCompletion() + "%");
 		System.out.println("Average: " + classlist.get(index).getAverage());
 		System.out.printf("%-20s%-20s%-20s%-30s\n", "Name of assignment", "Mark Received (%)", "Weight (%)", "Percent on final mark");
@@ -96,7 +104,7 @@ public class Main {
 			return;
 		}
 		int sum = 0;
-		System.out.println("Class Average \n");
+		System.out.println("\n              Class Average Report");
 		sortAlphabetically();
 		for (int i = 0; i < classlist.size(); i++) {
 			sum += classlist.get(i).getAverage();
@@ -284,6 +292,7 @@ public class Main {
 	
 
 	public static String readString(String prompt) {
+		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in);
 		String input;
 		do {
@@ -292,11 +301,11 @@ public class Main {
 			input = sc.nextLine();
 			input = input.trim();
 		} while(input.length() == 0);
-		sc.close();
 		return input;
 	}
 	
 	public static double readDouble(String prompt, int start, int end) {
+		@SuppressWarnings("resource")
 		Scanner sc = new Scanner(System.in); 
 		double choice;
 		while (true) {
@@ -313,10 +322,8 @@ public class Main {
 					}
 
 					choice = Double.parseDouble(sc.nextLine());
-					if (choice == -2) {
-						return -1;
-					} else if (choice >= start && choice <= end) {
-						sc.close();
+
+					if (choice >= start && choice <= end) {
 						return choice;
 					} else {
 						System.out.println("Invalid choice");
