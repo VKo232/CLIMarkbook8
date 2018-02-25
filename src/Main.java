@@ -9,8 +9,9 @@ import java.io.*;
 public class Main {
 	static ArrayList<Student> classlist = new ArrayList<Student>();
 	static String[][] options; 
+	static ArrayList<String> assignmentName = new ArrayList<String>();
+	static ArrayList<Double> weight = new ArrayList<Double>();
 	static boolean done = false;
-
 
 
 	public static void main(String[] args) {
@@ -40,6 +41,8 @@ public class Main {
 		}
 		return student -1;
 	}
+
+	
 	
 	/**
 	 * checks if there are students and assignments
@@ -60,7 +63,7 @@ public class Main {
 			}
 			
 			displayStudent(index);
-			choice = (int) readDouble("Which assignment? ", 1, classlist.get(0).getAssignmentSize());
+			choice = (int) readDouble("Which assignment? ", 1, assignmentName.size());
 			if(choice == -2) {
 				return;
 			}
@@ -72,20 +75,23 @@ public class Main {
 			classlist.get(index).editMark(choice - 1, mark);
 		}
 	}
+
+	
+	
 	/**
 	 * displays all the assignments for a single student
 	 * @param index
 	 */
 	public static void displayStudent(int index) {
 		System.out.println("\n                  Assignment report for: " + classlist.get(index).getFirst() + " " + classlist.get(index).getLast() + " " + classlist.get(index).getStudentNumber());
-		System.out.println("Total course completed: " + classlist.get(index).getTotalCompletion() + "%");
-		System.out.println("Average: " + classlist.get(index).getAverage() + "\n");
+		System.out.println("Total course completed: " + getTotalCompletion() + "%");
+		System.out.println("Average: " + classlist.get(index).getAverage(weight, getTotalCompletion()) + "\n");
 		System.out.printf("%-20s%-20s%-20s%-30s\n", "Name of assignment", "Mark Received (%)", "Weight (%)", "Percent on final mark");
-		for(int i = 0; i < classlist.get(index).getMarkArray().size(); i++) {
+		for(int i = 0; i < assignmentName.size(); i++) {
 			if(classlist.get(index).getMark(i) == -1) {
-				System.out.printf((i + 1) + ". %-20s%-20s%-20s%-30s\n", classlist.get(index).getAssignmentName(i), "Incomplete", classlist.get(index).getWeight(i) + "%", "0");
+				System.out.printf((i + 1) + ". %-20s%-20s%-20s%-30s\n", assignmentName.get(i), "Incomplete", weight.get(i) + "%", "0");
 			} else {
-				System.out.printf((i + 1) + ". %-20s%-20s%-20s%-30s\n", classlist.get(index).getAssignmentName(i), classlist.get(index).getMark(i) + "%", classlist.get(index).getWeight(i) + "%", classlist.get(index).getMark(i) * classlist.get(index).getWeight(i) / 100.0);
+				System.out.printf((i + 1) + ". %-20s%-20s%-20s%-30s\n", assignmentName.get(i), classlist.get(index).getMark(i) + "%", weight.get(i) + "%", classlist.get(index).getMark(i) * weight.get(i) / 100.0);
 		
 			}
 		}
@@ -100,7 +106,7 @@ public class Main {
 		System.out.printf("%-20s%-20s%-20s%s\n", "Last name", "First name", "Student number", "Average");
 
 		for (int i = 0; i < classlist.size(); i++) {
-			System.out.printf((i + 1) + "). %-20s%-20s%-20s%.2f\n" , classlist.get(i).getLast(), classlist.get(i).getFirst(), classlist.get(i).getStudentNumber(), classlist.get(i).getAverage());
+			System.out.printf((i + 1) + "). %-20s%-20s%-20s%.2f\n" , classlist.get(i).getLast(), classlist.get(i).getFirst(), classlist.get(i).getStudentNumber(), classlist.get(i).getAverage(weight, getTotalCompletion()));
 		}
 
 	}
@@ -149,6 +155,7 @@ public class Main {
 			if(answer.equals("back")) {
 				return;
 			}
+			answer = answer.substring(0, 1).toUpperCase() + answer.substring(1).toLowerCase();
 			switch(choice) {
 			case 1: 
 				classlist.get(index).setFirst(answer);
@@ -162,33 +169,77 @@ public class Main {
 			default:
 				break;
 			}
-			String again = readString("ed more? (y/n)"); 
+			
+			sortAlphabetically();
+			String again = readString("edit more? (y/n)"); 
 			if(again.equalsIgnoreCase("n")) {
 				return;
 			}
+			
 		}
 	}
 	
+	/**
+	 * adds a new student initialized with name and number
+	 */
+	public static void addStudent() {
+		String[] addStudentPrompts = { "\nEnter the first name of the student: ", "\nEnter the last name of the student: ", "\nEnter the student number: "};
+		String[] addStudentInfo = new String[3]; 
+		String input;
+		for(int i = 0; i < addStudentPrompts.length; i++) {
+			addStudentInfo[i] = readString(addStudentPrompts[i]);
+			if(addStudentInfo[i].equalsIgnoreCase("back")) {
+				if(i == 0) {
+					return;
+				} else {
+					continue;
+				}
+			}
+			addStudentInfo[i] = addStudentInfo[i].substring(0, 1).toUpperCase() + addStudentInfo[i].substring(1).toLowerCase();
+		}
+
+		classlist.add(new Student());
+		classlist.get(classlist.size() - 1).setFirst(addStudentInfo[0]);
+		classlist.get(classlist.size() - 1).setLast(addStudentInfo[1]);
+		classlist.get(classlist.size() - 1).setStudentNumber(addStudentInfo[2]);
+		try {
+			for(int i = 0; i < weight.size(); i++) {
+				classlist.get(classlist.size() - 1).addMark(-1);
+			}
+		} catch(IndexOutOfBoundsException e) {
+			
+		}
+		sortAlphabetically();
+		do {
+			input = readString("(y/n) Do you wish to add more? ");
+		} while (!input.equalsIgnoreCase("y") && !input.equalsIgnoreCase("n"));
+		if (input.equalsIgnoreCase("y")) {
+			addStudent();
+		}
+
+	}
+	
+
 	/**
 	 * Calculates and displays the class average
 	 */
 	public static void classAverageReport() {
 
-		int sum = 0;
+		double sum = 0;
 		System.out.println("\n              Class Average Report");
-		sortAlphabetically();
+
 		for (int i = 0; i < classlist.size(); i++) {
-			sum += classlist.get(i).getAverage();
+			sum += classlist.get(i).getAverage(weight, getTotalCompletion());
 		}
 		
 		System.out.println("\nClass Size: " + classlist.size());
 		System.out.println("\nClass Average: " + (sum / classlist.size()));
-		System.out.println("Number of assignments: " + classlist.get(0).getMarkArray().size() + "\n");
+		System.out.println("Number of assignments: " + weight.size() + "\n");
 		System.out.printf("%-20s%-20s%-20s%s\n", "Last name", "First name", "Student number", "Average");
 
 		for (int i = 0; i < classlist.size(); i++) {
 			System.out.printf("%-20s%-20s%-20s%.2f\n", classlist.get(i).getLast(), classlist.get(i).getFirst(),
-					classlist.get(i).getStudentNumber(), classlist.get(i).getAverage());
+					classlist.get(i).getStudentNumber(), classlist.get(i).getAverage(weight, getTotalCompletion()));
 		}
 
 	}
@@ -201,12 +252,12 @@ public class Main {
 		System.out.println("\n              Missing Assignment Report");
 		
 		System.out.println("\nClass Size: " + classlist.size());
-		System.out.println("Number of assignments: " + classlist.get(0).getAssignmentSize() + "\n");
+		System.out.println("Number of assignments: " + weight.size() + "\n");
 		System.out.printf("%-20s%-20s%-20s\n", "Last name", "First name", "Assignment Numbers Incomplete");
 
 		for (int i = 0; i < classlist.size(); i++) {
 			String missingAssignments = "";
-			for(int j = 0; j < classlist.get(0).getAssignmentSize(); j++) {
+			for(int j = 0; j < weight.size(); j++) {
 				if((int) classlist.get(i).getMark(j) == -1) {
 					missingAssignments += ", " + (j + 1);
 					students[i] = true;
@@ -230,14 +281,14 @@ public class Main {
 
 		for (int i = 0; i < classlist.size(); i++) {
 			int missingAssignments = 0;
-			for(int j = 0; j < classlist.get(0).getAssignmentSize(); j++) {
+			for(int j = 0; j < weight.size(); j++) {
 				if((int) classlist.get(i).getMark(j) == -1) {
 					missingAssignments++;
 				}
 			}
 			
-			if(classlist.get(i).getAverage() <= 65.0) {
-				System.out.printf("%-20s%-20s%-20s%.2f\n", classlist.get(i).getLast(), classlist.get(i).getFirst(), missingAssignments, classlist.get(i).getAverage());
+			if(classlist.get(i).getAverage(weight, getTotalCompletion()) <= 65.0) {
+				System.out.printf("%-20s%-20s%-20s%.2f\n", classlist.get(i).getLast(), classlist.get(i).getFirst(), missingAssignments, classlist.get(i).getAverage(weight, getTotalCompletion()));
 			}
 		}
 	}
@@ -252,12 +303,11 @@ public class Main {
 			classlist.get(i).removeMark(index);
 
 		}
-		for(int i = 0; i < classlist.size(); i++) {
-			classlist.get(i).removeAssignment(index);
-			classlist.get(i).removeWeight(index);
-		}
+		assignmentName.remove(index);
+		weight.remove(index);
 		
-		if(classlist.get(0).getAssignmentSize() > 0) {
+		
+		if(weight.size() > 0) {
 			String more = readString("Would you like to remove more assignments? (y/n)");
 			if(more.equalsIgnoreCase("y")) {
 				removeAssignment();
@@ -281,9 +331,9 @@ public class Main {
 
 		for(int i = 0; i < classlist.size(); i++) {
 			classlist.get(i).addMark(-1);
-			classlist.get(i).addAssignment(name);
-			classlist.get(i).addWeight(percent);
 		}
+		assignmentName.add(name);
+		weight.add(percent);
 		String more = readString("Would you like to add more assignments? (y/n)");
 		if(more.equalsIgnoreCase("y")) {
 			addAssignment();
@@ -294,7 +344,7 @@ public class Main {
 	public static void displayAssignment() {
 		double average;
 		System.out.println("\n                               Assignments for this class");
-		for(int i = 0; i < classlist.get(0).getAssignmentSize(); i++) {
+		for(int i = 0; i < weight.size(); i++) {
 			average = 0;
 			for(int j = 0; j < classlist.size(); j++) {
 				if(classlist.get(j).getMark(i) >= 0) {
@@ -302,7 +352,7 @@ public class Main {
 				}
 			}
 			average /= classlist.size();
-			System.out.printf((i + 1) + ". %-23s%-10.2f%.2f", classlist.get(0).getAssignmentName(i) , classlist.get(0).getWeight(i), average);
+			System.out.printf((i + 1) + ". %-23s%-10.2f%.2f\n", assignmentName.get(i) , weight.get(i), average);
 		}
 	}
 	/**
@@ -313,7 +363,7 @@ public class Main {
 	public static int chooseAssignment() {
 		displayAssignment();
 		int assignment;
-		assignment = (int) readDouble("Which assignment would you like to select? ", 1, classlist.get(0).getAssignmentSize());
+		assignment = (int) readDouble("Which assignment would you like to select? ", 1, weight.size());
 		if(assignment == -2) {
 			return -2;
 		}
@@ -327,7 +377,7 @@ public class Main {
 		}
 		String name = readString("What do you wish to rename the assignment to?");
 		for(int i = 0; i < classlist.size(); i++) {
-			classlist.get(i).editAssignmentName(index, name);
+			assignmentName.set(index, name);
 		}
 		String more = readString("Would you like to rename more assignments? (y/n)");
 		if(more.equalsIgnoreCase("y")) {
@@ -345,7 +395,7 @@ public class Main {
 			return;
 		}
 		for(int i =0; i < classlist.size(); i++) {
-			classlist.get(i).setWeight(index, percent);
+			weight.set(index, percent);
 		}
 		String more = readString("Would you like to change more assignments? (y/n)");
 		if(more.equalsIgnoreCase("y")) {
@@ -355,15 +405,15 @@ public class Main {
 	
 	public static void displayAssignmentMarks() {
 		int index = chooseAssignment();
-		System.out.println("\n                  Marks for \"" + classlist.get(0).getAssignmentName(index) + "\"");
-		int sum = 0;
+		System.out.println("\n                  Marks for \"" + assignmentName.get(index) + "\"");
+		double sum = 0;
 		for(int i = 0; i < classlist.size(); i++) {
 			if(classlist.get(i).getMark(index) != -1) {
 				sum += classlist.get(i).getMark(index);
 			}
 		}
 		System.out.printf("Class Average for assignment: %.2f\n" + ((double) sum / classlist.size()));
-		System.out.println("Percentage weight of final mark: " + classlist.get(0).getWeight(index) + "\n");
+		System.out.println("Percentage weight of final mark: " + weight.get(index) + "\n");
 		System.out.printf("%-20s%-20s%s\n", "Last name", "First name", "%mark received");
 		for(int i = 0; i < classlist.size(); i++) {
 			String complete;
@@ -430,13 +480,11 @@ public class Main {
 		for (int i = 1; i < choice1; i++) {
 			call += options[i].length;
 		}
-		if (classlist.size() < 1 && call == 4) {
-			
-		} else if(classlist.size() < 1 && call != 4) {
+		if(classlist.size() < 1 && call != 4) {
 			System.out.println("You have no students, Please add a new student or load a class file");
 			return;
-		} else if(classlist.get(0).getAssignmentSize() < 1) {
-			if(call != 8 && call != 5 && call != 4 && call != 7) {
+		} else if(weight.size() < 1) {
+			if(call != 8 && call != 5 && call != 4 && call != 7 && call != 1) {
 				System.out.println("You have no assignments, Please add an assignment or load a class file");
 				return;
 			}
@@ -504,49 +552,6 @@ public class Main {
 		} catch(StringIndexOutOfBoundsException e) {
 			forgotAccount();
 		}
-	}
-	
-	/**
-	 * adds a new student initialized with name and number
-	 */
-	public static void addStudent() {
-		String[] addStudentPrompts = { "\nEnter the first name of the student: ", "\nEnter the last name of the student: ", "\nEnter the student number: "};
-		String[] addStudentInfo = new String[3]; 
-		String input;
-		for(int i = 0; i < addStudentPrompts.length; i++) {
-			addStudentInfo[i] = readString(addStudentPrompts[i]);
-			if(addStudentInfo[i].equalsIgnoreCase("back")) {
-				if(i == 0) {
-					return;
-				} else {
-					continue;
-				}
-			}
-			addStudentInfo[i] = addStudentInfo[i].toLowerCase();
-			addStudentInfo[i] = addStudentInfo[i].substring(0, 1).toUpperCase() + addStudentInfo[i].substring(1);
-		}
-
-		classlist.add(new Student());
-		classlist.get(classlist.size() - 1).setFirst(addStudentInfo[0]);
-		classlist.get(classlist.size() - 1).setLast(addStudentInfo[1]);
-		classlist.get(classlist.size() - 1).setStudentNumber(addStudentInfo[2]);
-		try {
-			for(int i = 0; i < classlist.get(0).getAssignmentSize(); i++) {
-				classlist.get(classlist.size() - 1).addMark(-1);
-				classlist.get(classlist.size() - 1).addAssignment(classlist.get(0).getAssignmentName(i));
-				classlist.get(classlist.size() - 1).addWeight(classlist.get(0).getWeight(i));
-			}
-		} catch(IndexOutOfBoundsException e) {
-			
-		}
-		sortAlphabetically();
-		do {
-			input = readString("(y/n) Do you wish to add more? ");
-		} while (!input.equalsIgnoreCase("y") && !input.equalsIgnoreCase("n"));
-		if (input.equalsIgnoreCase("y")) {
-			addStudent();
-		}
-
 	}
 	
 
@@ -631,10 +636,17 @@ public class Main {
 	
 	public static void save() {
 		String name = readString("\nWhat will you name your file? ");
+		if (name.equals("back")) {
+			return;
+		}
 		try {
+			ArrayList<Object> objArray = new ArrayList<Object>();
+			objArray.add(classlist);
+			objArray.add(assignmentName);
+			objArray.add(weight);
 			FileOutputStream fs = new FileOutputStream(new File(name));
 			ObjectOutputStream obStream = new ObjectOutputStream(fs);
-			obStream.writeObject(classlist);
+			obStream.writeObject(objArray);
 			System.out.println("Saved~~");
 			obStream.close();
 			fs.close();
@@ -644,22 +656,43 @@ public class Main {
 	}
 
 	
-	
 	@SuppressWarnings("unchecked")
 	public static void load() {
-		String file = readString("\nWhich class file? ");
+		String file = readString("\nWhich class file name? ");
+		if(file.equals("back")) {
+			return;
+		}
 		try {
 			FileInputStream fs = new FileInputStream(file);
 			ObjectInputStream obStream = new ObjectInputStream(fs);
-			classlist = (ArrayList<Student>) obStream.readObject();
+			Object obj = obStream.readObject();
+			
+			ArrayList<Object> objArray = (ArrayList<Object>) obj;
+			
+			classlist = (ArrayList<Student>) objArray.get(0);
+			assignmentName = (ArrayList<String>) objArray.get(1);
+			weight = (ArrayList<Double>) objArray.get(2);
+			
+			
 			System.out.println("Loaded~~");
 			obStream.close();
 			fs.close();
-		} catch (IOException | ClassNotFoundException e) {
+		} catch (IOException | ClassNotFoundException | IndexOutOfBoundsException e) {
 			System.out.println("\nFailed to load");
 		}
 
 
 	}
 
+
+
+	public static double getTotalCompletion() {
+		double totalCompletion = 0;
+		for(int i = 0; i < weight.size(); i++) {
+			totalCompletion += weight.get(i);
+		}
+		return totalCompletion;
+		
+	}
+	
 }

@@ -13,9 +13,7 @@ public class Student implements Serializable{
 	private ArrayList<Double> marks;
 	private String first, last, number;
 	private double average;
-	private ArrayList<String> assignmentName;
-	private ArrayList<Double> weight;
-	private int totalCompletion;
+
 	/**
 	 * constructor
 	 */
@@ -25,10 +23,6 @@ public class Student implements Serializable{
 		last = "";
 		number = "";
 		average = 100;
-		assignmentName = new ArrayList<String>();
-		weight = new ArrayList<Double>();
-		totalCompletion = 0;
-		marks.ensureCapacity(weight.size());
 	}
 	
 	/**
@@ -56,8 +50,8 @@ public class Student implements Serializable{
 	/**
 	 * @return average already calculated
 	 */
-	public double getAverage() {
-		setAverage();
+	public double getAverage(ArrayList<Double> weight, double totalCompletion) {
+		setAverage(weight, totalCompletion);
 		return average;
 	}
 	
@@ -106,8 +100,9 @@ public class Student implements Serializable{
 	/**
 	 * sets the current student average
 	 */
-	public void setAverage() {
-		int sum = 0;
+	public void setAverage(ArrayList<Double> weight, double totalCompletion ) {
+		double sum = 0;
+		
 		if(marks.size() != 0) {
 			for(int i = 0; i < marks.size(); i++) {
 				if(marks.get(i) != -1) {
@@ -142,55 +137,4 @@ public class Student implements Serializable{
 		this.last = last;
 	}
 
-	public String getAssignmentName(int index) {
-		return assignmentName.get(index);
-	}
-
-	public void addAssignment(String name) {
-		assignmentName.add(name);
-		
-	}
-	
-	public void editAssignmentName(int index, String name) {
-		assignmentName.set(index, name);
-	}
-	
-	public void removeAssignment(int index) {
-		assignmentName.remove(index);
-	}
-	public ArrayList<Double> getMarkArray() {
-		return marks;
-	}
-
-	public double getWeight(int index) {
-		return weight.get(index);
-	}
-
-	public void setWeight(int index, double percent) {
-		weight.set(index, percent);
-		setTotalCompletion();
-	}
-	
-	public void addWeight(double percent) {
-		weight.add(percent);
-		setTotalCompletion();
-	}
-	public void removeWeight(int index) {
-		weight.remove(index);
-	}
-	
-	public void setTotalCompletion() {
-		totalCompletion = 0;
-		for(int i = 0; i < weight.size(); i++) {
-			totalCompletion += weight.get(i);
-		}
-		
-	}
-	public int getTotalCompletion() {
-		return totalCompletion;
-	}
-	public int getAssignmentSize() {
-		return weight.size();
-	}
-	
 }
