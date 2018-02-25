@@ -226,7 +226,7 @@ public class Main {
 		System.out.println("\n              At Risk Student Report");
 		
 		System.out.println("\nClass Size: " + classlist.size());
-		System.out.printf("%-20s%-20s%-20s%-20s\n", "Last name", "First name", "# of Incomplete Work", "Average");
+		System.out.printf("%-20s%-15s%-25s%-20s\n", "Last name", "First name", "# of Incomplete Work", "Average");
 
 		for (int i = 0; i < classlist.size(); i++) {
 			int missingAssignments = 0;
@@ -634,7 +634,6 @@ public class Main {
 			FileInputStream fs = new FileInputStream(file);
 			ObjectInputStream obStream = new ObjectInputStream(fs);
 			classlist = (ArrayList<Student>) obStream.readObject();
-
 			System.out.println("Loaded~~");
 			obStream.close();
 			fs.close();
