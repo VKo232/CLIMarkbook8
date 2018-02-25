@@ -1,6 +1,10 @@
 import java.util.*;
 import java.io.*;
 
+// make sure all have a loop prompt
+// make sure all check if there are assignments or students
+// response type should be on the right
+
 public class Main {
 	static ArrayList<Student> classlist = new ArrayList<Student>();
 	static String[][] options; 
@@ -22,25 +26,39 @@ public class Main {
 	}
 
 	
-
-	public static void chooseStudent() {
-		if (classlist.size() < 1) {
-			System.out.println("You have no students");
-			return;
-		}
+	/**
+	 * displays list of students and users tells which one it is
+	 * @return index of student chosen
+	 */
+	public static int chooseStudent() {
 		studentList();
 		int student;
-		student = (int) readDouble("Which student would you like to view information for? ", 1, classlist.size());
+		student = (int) readDouble("Which student would you like to select? (num): ", 1, classlist.size());
 		if(student == -2) {
-			return;
+			return -2;
 		}
-		displayStudent(student - 1);
-		editStudentMark(student - 1);
+		return student -1;
 	}
 	
-	public static void editStudentMark(int index) {
+	/**
+	 * checks if there are students and assignments
+	 * calls chooseStudent and then displays assignments and prompts user to edit
+	 */
+	public static void editStudentMark() {
+		if (classlist.size() < 1){
+			System.out.println("There are no students");
+			return;
+		} else if (Student.getAssignmentSize() < 1) {
+			System.out.println("There are no assignments");
+			return;
+		}
 		int choice;
 		double mark;
+		int index = chooseStudent();
+		if(index == -2) {
+			return;
+		}
+		displayStudent(index);
 		while (true) {
 			String check = readString("(y/n) Would you like to edit the student's mark? ");
 			if (check.equalsIgnoreCase("n")) {
@@ -60,12 +78,11 @@ public class Main {
 			classlist.get(index).editMark(choice, mark);
 		}
 	}
-	
+	/**
+	 * displays all the assignments for a single student
+	 * @param index
+	 */
 	public static void displayStudent(int index) {
-		if (Student.getAssignmentSize() < 1) {
-			System.out.println("There are currently no assignments");
-			return;
-		}
 		System.out.println("\n                  Assignment report for: " + classlist.get(index).getFirst() + " " + classlist.get(index).getLast() + " " + classlist.get(index).getStudentNumber());
 		System.out.println("Total course completed: " + Student.getTotalCompletion() + "%");
 		System.out.println("Average: " + classlist.get(index).getAverage());
@@ -79,7 +96,9 @@ public class Main {
 			}
 		}
 	}
-	
+	/**
+	 * Displays all students and averages
+	 */
 	public static void studentList () {
 		if (classlist.size() < 1) {
 			System.out.println("You have no students");
@@ -88,12 +107,31 @@ public class Main {
 		System.out.printf("%-20s%-20s%-20s%s\n", "Last name", "First name", "Student number", "Average");
 
 		for (int i = 0; i < classlist.size(); i++) {
-			System.out.printf((i + 1) + "). %-20s%-20s%-20s" + classlist.get(i).getAverage() + "\n", classlist.get(i).getLast(), classlist.get(i).getFirst(), classlist.get(i).getStudentNumber());
+			System.out.printf((i + 1) + "). %-20s%-20s%-20s%.2f\n" , classlist.get(i).getLast(), classlist.get(i).getFirst(), classlist.get(i).getStudentNumber(), classlist.get(i).getAverage());
 		}
 
 	}
-
-	
+	/**
+	 * checks num of students
+	 * chooses student then confirms removal and prompts for again
+	 */
+	public static void removeStudent() {
+		if (classlist.size() < 1) {
+			System.out.println("You have no students to remove");
+			return;
+		}
+		int index = chooseStudent();
+		String confirm = readString("Type \"CONFIRM\" to delete student (It cannot be recovered): ");
+		if (confirm.equals("CONFIRM")) {
+			System.out.println(classlist.get(index).getFirst() + " has been removed.");
+			classlist.remove(index);
+		}
+		String again = readString("Remove more? (y/n)"); 
+		if(again.equalsIgnoreCase("y")) {
+			removeStudent();
+		}
+		
+	}
 	/**
 	 * Calculates and displays the class average
 	 */
@@ -122,7 +160,23 @@ public class Main {
 
 	}
 	
-	
+	public static void removeAssignment() {
+		if(classlist.size() < 1) {
+			System.out.println("Add students in the class first!");
+			return;
+		} else if(Student.getAssignmentSize() < 1) {
+			System.out.println("Add assignments first!!");
+			return;
+		}
+		int index = chooseAssignment();
+		
+		for(int i = 0; i < classlist.size(); i++) {
+			classlist.get(i).removeMark(index);
+
+		}
+		Student.removeAssignment(index);
+		Student.removeWeight(index);
+	}
 	
 	public static void addAssignment() {
 		if(classlist.size() < 1) {
@@ -138,8 +192,34 @@ public class Main {
 			classlist.get(i).addMark(-1);
 		}
 	}
-
 	
+	
+	public static void displayAssignment() {
+		double average;
+
+		for(int i = 0; i < Student.getAssignmentSize(); i++) {
+			average = 0;
+			for(int j = 0; j < classlist.size(); j++) {
+				if(classlist.get(j).getMark(i) >= 0) {
+					average += classlist.get(j).getMark(i);
+				}
+			}
+			average /= classlist.size();
+			System.out.printf((i + 1) + "%-23s%-10.2f%.2f", Student.getAssignmentName(i) , Student.getWeight(i), average);
+		}
+	}
+	
+	
+	public static int chooseAssignment() {
+		displayAssignment();
+		int assignment;
+		assignment = (int) readDouble("Which assignment would you like to view information for? ", 1, Student.getAssignmentSize());
+		if(assignment == -2) {
+			return -2;
+		}
+		return assignment - 1;
+	}
+																
 	
 	/**
 	 * simple bubble sort to change the array in alphabetical order last name
@@ -216,37 +296,37 @@ public class Main {
 			classAverage();
 			break;
 		case 2:
-			
+			; // missing assignments
 			break;
 		case 3:
-			;
+			; // at risk students
 			break;
 		case 4:
 			addStudent();
 			break;
 		case 5:
-			;
+			removeStudent();
 			break;
 		case 6:
-			chooseStudent();
+			editStudentMark();
 			break;
 		case 7:
-			;
+			; // forgot student account
 			break;
 		case 8:
 			addAssignment();
 			break;
 		case 9:
-			;
+			removeAssignment();
 			break;
-		case 10:
-			;
+		case 10: 
+			; // rename assignment
 			break;
 		case 11:
-			;
+			; // change assignment weight
 			break;
 		case 12:
-			;
+			; // marks for individual assignment
 			break;
 		default:
 			break;
@@ -340,8 +420,8 @@ public class Main {
 		options = new String[][] {
 				{ "Reports", "Students", "Assignments", "Save", "Load", "Quit" },
 				{ "Class report", "Missing assignments", "At risk students"},
-				{ "Add new student", "Remove student", "Student Information", "Forgot Student Account"}, 
-				{ "Add assignment", "Remove assignment", "Rename assignment", "Change assignment weight","Marks for assignment"} 
+				{ "Add new student", "Remove student", "Student Marks", "Forgot Student Account"}, 
+				{ "Add assignment", "Remove assignment", "Rename assignment", "Change assignment weight", "Marks for assignment"} 
 				};
 	}
 	

@@ -155,7 +155,7 @@ public class Student implements Serializable{
 		assignmentName.set(index, name);
 	}
 	
-	public void removeAssignment(int index) {
+	public static void removeAssignment(int index) {
 		assignmentName.remove(index);
 	}
 	public ArrayList<Double> getMarkArray() {
@@ -174,6 +174,9 @@ public class Student implements Serializable{
 	public static void addWeight(double percent) {
 		weight.add(percent);
 		setTotalCompletion();
+	}
+	public static void removeWeight(int index) {
+		weight.remove(index);
 	}
 	
 	public static void setTotalCompletion() {
