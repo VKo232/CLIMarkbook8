@@ -9,9 +9,9 @@ import java.io.*;
 /**
  * A program that helps teachers store, edit, and remove the students, their
  * marks, names it also displays class reports
- * 
+ *
  * @author qwertyuiop1
- * 
+ *
  *         note: do not run with student class, it is already in this program
  */
 public class Main {
@@ -36,7 +36,7 @@ public class Main {
 
 	/**
 	 * displays list of students and returns the class list index for the student
-	 * 
+	 *
 	 * @return index of student chosen
 	 */
 	public static int chooseStudent() {
@@ -83,7 +83,7 @@ public class Main {
 
 	/**
 	 * displays all the assignment averages for a single student
-	 * 
+	 *
 	 * @param index
 	 *            int of the student in the classlist
 	 */
@@ -167,17 +167,17 @@ public class Main {
 			}
 			answer = answer.substring(0, 1).toUpperCase() + answer.substring(1).toLowerCase();
 			switch (choice) {
-			case 1:
-				classlist.get(index).setFirst(answer);
-				break;
-			case 2:
-				classlist.get(index).setLast(answer);
-				break;
-			case 3:
-				classlist.get(index).setStudentNumber(answer);
-				break;
-			default:
-				break;
+				case 1:
+					classlist.get(index).setFirst(answer);
+					break;
+				case 2:
+					classlist.get(index).setLast(answer);
+					break;
+				case 3:
+					classlist.get(index).setStudentNumber(answer);
+					break;
+				default:
+					break;
 			}
 
 			sortAlphabetically();
@@ -385,7 +385,7 @@ public class Main {
 
 	/**
 	 * Displays assignments then allows user to choose the particular assignment
-	 * 
+	 *
 	 * @return choice index
 	 */
 	public static int chooseAssignment() {
@@ -518,7 +518,7 @@ public class Main {
 
 	/**
 	 * method receives the choices of the user and calls the corresponding method
-	 * 
+	 *
 	 * @param choice1
 	 *            int of choice
 	 * @param choice2
@@ -539,44 +539,44 @@ public class Main {
 			}
 		}
 		switch (call) {
-		case 1:
-			classAverageReport();
-			break;
-		case 2:
-			missingAssignmentReport();
-			break;
-		case 3:
-			atRiskReport(); // at risk students
-			break;
-		case 4:
-			addStudent();
-			break;
-		case 5:
-			removeStudent();
-			break;
-		case 6:
-			editStudentMark();
-			break;
-		case 7:
-			editStudentInformation(); // forgot student account or maybe rename student information
-			break;
-		case 8:
-			addAssignment();
-			break;
-		case 9:
-			removeAssignment();
-			break;
-		case 10:
-			renameAssignment(); // rename assignment
-			break;
-		case 11:
-			editAssignmentWeight(); // change assignment weight
-			break;
-		case 12:
-			displayAssignmentMarks(); // marks for individual assignment
-			break;
-		default:
-			break;
+			case 1:
+				classAverageReport();
+				break;
+			case 2:
+				missingAssignmentReport();
+				break;
+			case 3:
+				atRiskReport(); // at risk students
+				break;
+			case 4:
+				addStudent();
+				break;
+			case 5:
+				removeStudent();
+				break;
+			case 6:
+				editStudentMark();
+				break;
+			case 7:
+				editStudentInformation(); // forgot student account or maybe rename student information
+				break;
+			case 8:
+				addAssignment();
+				break;
+			case 9:
+				removeAssignment();
+				break;
+			case 10:
+				renameAssignment(); // rename assignment
+				break;
+			case 11:
+				editAssignmentWeight(); // change assignment weight
+				break;
+			case 12:
+				displayAssignmentMarks(); // marks for individual assignment
+				break;
+			default:
+				break;
 		}
 
 	}
@@ -611,7 +611,7 @@ public class Main {
 
 	/**
 	 * uses scanner to read a string user input and returns it
-	 * 
+	 *
 	 * @param prompt
 	 *            Prints out a String prompt
 	 * @return returns the user's answer without spaces on the sides
@@ -632,7 +632,7 @@ public class Main {
 	/**
 	 * method that allows a continual inputs until there is a number in a defined
 	 * range, inclusive
-	 * 
+	 *
 	 * @param prompt
 	 *            String that prompts user to answer
 	 * @param start
@@ -766,7 +766,7 @@ public class Main {
 
 	/**
 	 * calculates and returns the percentage of the course that is completed
-	 * 
+	 *
 	 * @return totalCompletion double which is percent of course completed
 	 */
 	public static double getTotalCompletion() {
@@ -783,7 +783,7 @@ public class Main {
 /**
  * Student object that stores name, number, average, and marks for for each
  * assignment
- * 
+ *
  * @author qwertyuiop1
  *
  */
@@ -807,7 +807,7 @@ class Student implements Serializable {
 
 	/**
 	 * returns mark at given index
-	 * 
+	 *
 	 * @param index
 	 * @return int mark at the current index
 	 */
@@ -817,7 +817,7 @@ class Student implements Serializable {
 
 	/**
 	 * returns last name
-	 * 
+	 *
 	 * @return String last name
 	 */
 	public String getLast() {
@@ -826,7 +826,7 @@ class Student implements Serializable {
 
 	/**
 	 * returns first name
-	 * 
+	 *
 	 * @return String first name
 	 */
 	public String getFirst() {
@@ -835,7 +835,7 @@ class Student implements Serializable {
 
 	/**
 	 * calculates the total average then returns it
-	 * 
+	 *
 	 * @return average already calculated
 	 */
 	public double getAverage(ArrayList<Double> weight, double totalCompletion) {
@@ -854,7 +854,7 @@ class Student implements Serializable {
 
 	/**
 	 * returns a string of student number
-	 * 
+	 *
 	 * @return String of the student number
 	 */
 	public String getStudentNumber() {
@@ -863,7 +863,7 @@ class Student implements Serializable {
 
 	/**
 	 * adds a new mark
-	 * 
+	 *
 	 * @param input,
 	 *            double of percentage
 	 */
@@ -873,7 +873,7 @@ class Student implements Serializable {
 
 	/**
 	 * removes a mark at the given index
-	 * 
+	 *
 	 * @param index
 	 *            int of the index
 	 */
@@ -883,7 +883,7 @@ class Student implements Serializable {
 
 	/**
 	 * changes the mark at the index
-	 * 
+	 *
 	 * @param index
 	 *            int of mark index
 	 * @param mark
@@ -895,7 +895,7 @@ class Student implements Serializable {
 
 	/**
 	 * Sets the student number
-	 * 
+	 *
 	 * @param num
 	 *            this is a string
 	 */
@@ -905,7 +905,7 @@ class Student implements Serializable {
 
 	/**
 	 * sets first name
-	 * 
+	 *
 	 * @param first
 	 *            name string
 	 */
@@ -915,7 +915,7 @@ class Student implements Serializable {
 
 	/**
 	 * sets last name
-	 * 
+	 *
 	 * @param String
 	 *            last name
 	 */
