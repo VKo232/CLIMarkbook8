@@ -13,9 +13,9 @@ public class Student implements Serializable{
 	private ArrayList<Double> marks;
 	private String first, last, number;
 	private double average;
-	private static ArrayList<String> assignmentName;
-	private static ArrayList<Double> weight;
-	private static int totalCompletion;
+	private ArrayList<String> assignmentName;
+	private ArrayList<Double> weight;
+	private int totalCompletion;
 	/**
 	 * constructor
 	 */
@@ -142,54 +142,54 @@ public class Student implements Serializable{
 		this.last = last;
 	}
 
-	public static String getAssignmentName(int index) {
+	public String getAssignmentName(int index) {
 		return assignmentName.get(index);
 	}
 
-	public static void addAssignment(String name) {
+	public void addAssignment(String name) {
 		assignmentName.add(name);
 		
 	}
 	
-	public static void editAssignmentName(int index, String name) {
+	public void editAssignmentName(int index, String name) {
 		assignmentName.set(index, name);
 	}
 	
-	public static void removeAssignment(int index) {
+	public void removeAssignment(int index) {
 		assignmentName.remove(index);
 	}
 	public ArrayList<Double> getMarkArray() {
 		return marks;
 	}
 
-	public static double getWeight(int index) {
+	public double getWeight(int index) {
 		return weight.get(index);
 	}
 
-	public static void setWeight(int index, double percent) {
+	public void setWeight(int index, double percent) {
 		weight.set(index, percent);
 		setTotalCompletion();
 	}
 	
-	public static void addWeight(double percent) {
+	public void addWeight(double percent) {
 		weight.add(percent);
 		setTotalCompletion();
 	}
-	public static void removeWeight(int index) {
+	public void removeWeight(int index) {
 		weight.remove(index);
 	}
 	
-	public static void setTotalCompletion() {
+	public void setTotalCompletion() {
 		totalCompletion = 0;
 		for(int i = 0; i < weight.size(); i++) {
 			totalCompletion += weight.get(i);
 		}
 		
 	}
-	public static int getTotalCompletion() {
+	public int getTotalCompletion() {
 		return totalCompletion;
 	}
-	public static int getAssignmentSize() {
+	public int getAssignmentSize() {
 		return weight.size();
 	}
 	
