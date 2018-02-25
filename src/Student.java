@@ -151,7 +151,7 @@ public class Student implements Serializable{
 		
 	}
 	
-	public void editAssignmentName(int index, String name) {
+	public static void editAssignmentName(int index, String name) {
 		assignmentName.set(index, name);
 	}
 	
@@ -166,7 +166,7 @@ public class Student implements Serializable{
 		return weight.get(index);
 	}
 
-	public void setWeight(int index, double percent) {
+	public static void setWeight(int index, double percent) {
 		weight.set(index, percent);
 		setTotalCompletion();
 	}

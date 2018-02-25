@@ -2,8 +2,9 @@ import java.util.*;
 import java.io.*;
 
 // make sure all have a loop prompt
-// make sure all check if there are assignments or students
 // response type should be on the right
+// add a couple thread.sleep to make viewing smoother
+// makes sure back escape option works
 
 public class Main {
 	static ArrayList<Student> classlist = new ArrayList<Student>();
@@ -45,13 +46,6 @@ public class Main {
 	 * calls chooseStudent and then displays assignments and prompts user to edit
 	 */
 	public static void editStudentMark() {
-		if (classlist.size() < 1){
-			System.out.println("There are no students");
-			return;
-		} else if (Student.getAssignmentSize() < 1) {
-			System.out.println("There are no assignments");
-			return;
-		}
 		int choice;
 		double mark;
 		int index = chooseStudent();
@@ -75,7 +69,7 @@ public class Main {
 			if(mark == -2) {
 				continue;
 			}
-			classlist.get(index).editMark(choice, mark);
+			classlist.get(index).editMark(choice - 1, mark);
 		}
 	}
 	/**
@@ -96,14 +90,13 @@ public class Main {
 			}
 		}
 	}
-	/**
+	
+	
+	
+	/** 
 	 * Displays all students and averages
 	 */
 	public static void studentList () {
-		if (classlist.size() < 1) {
-			System.out.println("You have no students");
-			return;
-		}
 		System.out.printf("%-20s%-20s%-20s%s\n", "Last name", "First name", "Student number", "Average");
 
 		for (int i = 0; i < classlist.size(); i++) {
@@ -111,36 +104,36 @@ public class Main {
 		}
 
 	}
+
+	
+	
 	/**
 	 * checks num of students
 	 * chooses student then confirms removal and prompts for again
 	 */
 	public static void removeStudent() {
-		if (classlist.size() < 1) {
-			System.out.println("You have no students to remove");
-			return;
-		}
 		int index = chooseStudent();
 		String confirm = readString("Type \"CONFIRM\" to delete student (It cannot be recovered): ");
 		if (confirm.equals("CONFIRM")) {
 			System.out.println(classlist.get(index).getFirst() + " has been removed.");
 			classlist.remove(index);
 		}
-		String again = readString("Remove more? (y/n)"); 
-		if(again.equalsIgnoreCase("y")) {
-			removeStudent();
+		if(classlist.size() > 0) {
+			String again = readString("Remove more? (y/n)"); 
+			if(again.equalsIgnoreCase("y")) {
+				removeStudent();
+			}
 		}
 		
 	}
+	
+	
+	
 	/**
 	 * Calculates and displays the class average
 	 */
-	public static void classAverage() {
+	public static void classAverageReport() {
 
-		if (classlist.size() < 1) {
-			System.out.println("You have no students");
-			return;
-		}
 		int sum = 0;
 		System.out.println("\n              Class Average Report");
 		sortAlphabetically();
@@ -160,14 +153,59 @@ public class Main {
 
 	}
 	
-	public static void removeAssignment() {
-		if(classlist.size() < 1) {
-			System.out.println("Add students in the class first!");
-			return;
-		} else if(Student.getAssignmentSize() < 1) {
-			System.out.println("Add assignments first!!");
-			return;
+	
+	public static void missingAssignmentReport() {
+
+		boolean[] students = new boolean[classlist.size()];
+		Arrays.fill(students, false);
+		System.out.println("\n              Missing Assignment Report");
+		
+		System.out.println("\nClass Size: " + classlist.size());
+		System.out.println("Number of assignments: " + Student.getAssignmentSize());
+		System.out.printf("%-20s%-20s%-20s\n", "Last name", "First name", "Assignment Numbers Incomplete");
+
+		for (int i = 0; i < classlist.size(); i++) {
+			String missingAssignments = "";
+			for(int j = 0; j < Student.getAssignmentSize(); j++) {
+				if((int) classlist.get(i).getMark(j) == -1) {
+					missingAssignments += ", " + (j + 1);
+					students[i] = true;
+				}
+				
+			}
+
+			if(students[i]) {
+				missingAssignments = missingAssignments.substring(1);
+				System.out.printf("%-20s%-20s" + missingAssignments + "\n", classlist.get(i).getLast(), classlist.get(i).getFirst());
+			}
 		}
+	}
+	
+	public static void atRiskReport() {
+
+		System.out.println("\n              At Risk Student Report");
+		
+		System.out.println("\nClass Size: " + classlist.size());
+		System.out.printf("%-20s%-20s%-20s%-20s\n", "Last name", "First name", "# of Incomplete Work", "Average");
+
+		for (int i = 0; i < classlist.size(); i++) {
+			int missingAssignments = 0;
+			for(int j = 0; j < Student.getAssignmentSize(); j++) {
+				if((int) classlist.get(i).getMark(j) == -1) {
+					missingAssignments++;
+				}
+			}
+			
+			if(classlist.get(i).getAverage() <= 65.0) {
+				System.out.printf("%-20s%-20s%-20s%.2f\n", classlist.get(i).getLast(), classlist.get(i).getFirst(), missingAssignments, classlist.get(i).getAverage());
+			}
+		}
+	}
+	
+	
+
+	public static void removeAssignment() {
+
 		int index = chooseAssignment();
 		
 		for(int i = 0; i < classlist.size(); i++) {
@@ -176,20 +214,36 @@ public class Main {
 		}
 		Student.removeAssignment(index);
 		Student.removeWeight(index);
+		
+		if(Student.getAssignmentSize() > 0) {
+			String more = readString("Would you like to remove more assignments? (y/n)");
+			if(more.equalsIgnoreCase("y")) {
+				removeAssignment();
+			}
+		}
 	}
 	
+	
+	
 	public static void addAssignment() {
-		if(classlist.size() < 1) {
-			System.out.println("Add students in the class first!");
+
+		String name = readString("What is the name of your new assignment? ");
+		if(name.equals("back")) {
 			return;
 		}
-		String name = readString("What is the name of your new assignment? ");
 		double percent = readDouble("How much will the assignment weigh? %", 0, 100);
+		if((int) percent == -2) {
+			return;
+		}
 		classlist.get(0);
 		Student.addAssignment(name);
 		Student.addWeight(percent);
 		for(int i = 0; i < classlist.size(); i++) {
 			classlist.get(i).addMark(-1);
+		}
+		String more = readString("Would you like to add more assignments? (y/n)");
+		if(more.equalsIgnoreCase("y")) {
+			addAssignment();
 		}
 	}
 	
@@ -208,7 +262,10 @@ public class Main {
 			System.out.printf((i + 1) + "%-23s%-10.2f%.2f", Student.getAssignmentName(i) , Student.getWeight(i), average);
 		}
 	}
-	
+	/**
+	 * Displays assignments then allows user to choose the particular assignment
+	 * @return choice index
+	 */
 	
 	public static int chooseAssignment() {
 		displayAssignment();
@@ -219,31 +276,35 @@ public class Main {
 		}
 		return assignment - 1;
 	}
-																
 	
-	/**
-	 * simple bubble sort to change the array in alphabetical order last name
-	 */
-	public static void sortAlphabetically() {
-		int size = classlist.size();
-		Student placeholder = classlist.get(0);
-
-		for (int i = 0; i < size; i++) {
-			for (int j = 1; j < size - 1; j++) {
-				if (classlist.get(j - 1).getLast().compareToIgnoreCase(classlist.get(j).getLast()) > 0) {
-					placeholder = classlist.get(j - 1);
-					classlist.set(j - 1, classlist.get(j));
-					classlist.set(j, placeholder);
-				} else if (classlist.get(j - 1).getLast().compareToIgnoreCase(classlist.get(j).getLast()) == 0
-						&& classlist.get(j - 1).getFirst().compareToIgnoreCase(classlist.get(j).getFirst()) > 0) {
-					placeholder = classlist.get(j - 1);
-					classlist.set(j - 1, classlist.get(j));
-					classlist.set(j, placeholder);
-				}
-			}
+	public static void renameAssignment() {
+		int index = chooseAssignment();
+		if(index == -2) {
+			return;
+		}
+		String name = readString("What do you wish to rename the assignment to?");
+		Student.editAssignmentName(index, name);
+		String more = readString("Would you like to rename more assignments? (y/n)");
+		if(more.equalsIgnoreCase("y")) {
+			renameAssignment();
 		}
 	}
-
+	
+	public static void editAssignmentWeight() {
+		int index = chooseAssignment();
+		if(index == -2) {
+			return;
+		}
+		double percent = readDouble("What do you wish to edit the assignment weight to?", 0, 100);
+		if(percent == -2) {
+			return;
+		}
+		Student.setWeight(index, percent);
+		String more = readString("Would you like to change more assignments? (y/n)");
+		if(more.equalsIgnoreCase("y")) {
+			renameAssignment();
+		}
+	}
 	
 	
 	public static void displayOptions() {
@@ -257,14 +318,17 @@ public class Main {
 		
 		// takes in a user input
 		choice1 = (int) readDouble("(num) Whats your choice: ", 1, options[0].length);
-		if (choice1 == 6) {
+		if (choice1 == 7) {
 			done = true;		
 			return;
-		} else if (choice1 == 5) {
+		} else if (choice1 == 6) {
 			load();
 			return;
-		} else if (choice1 == 4) {
+		} else if (choice1 == 5) {
 			save();
+			return;
+		} else if (choice1 == 4){
+			forgotAccount();
 			return;
 		} else if(choice1 == -2) {
 			return;
@@ -291,15 +355,24 @@ public class Main {
 		for (int i = 1; i < choice1; i++) {
 			call += options[i].length;
 		}
+		if (classlist.size() < 1 && call != 4) {
+			System.out.println("You have no students, Please add a new student or load a class file");
+			return;
+		} else if(Student.getAssignmentSize() < 1) {
+			if(call != 8 && call != 5 && call != 4 && call != 7) {
+				System.out.println("You have no assignments, Please add an assignment or load a class file");
+				return;
+			}
+		}
 		switch (call) {
 		case 1:
-			classAverage();
+			classAverageReport();
 			break;
 		case 2:
-			; // missing assignments
+			missingAssignmentReport(); 
 			break;
 		case 3:
-			; // at risk students
+			atRiskReport(); // at risk students
 			break;
 		case 4:
 			addStudent();
@@ -311,7 +384,7 @@ public class Main {
 			editStudentMark();
 			break;
 		case 7:
-			; // forgot student account
+			; // forgot student account or maybe rename student information
 			break;
 		case 8:
 			addAssignment();
@@ -320,10 +393,10 @@ public class Main {
 			removeAssignment();
 			break;
 		case 10: 
-			; // rename assignment
+			renameAssignment(); // rename assignment
 			break;
 		case 11:
-			; // change assignment weight
+			editAssignmentWeight(); // change assignment weight
 			break;
 		case 12:
 			; // marks for individual assignment
@@ -334,7 +407,9 @@ public class Main {
 
 	}
 
-	
+	public static void forgotAccount() {
+		
+	}
 	
 	/**
 	 * adds a new student initialized with name and number
@@ -393,7 +468,7 @@ public class Main {
 				do {
 					System.out.println("\n" + prompt + "\n");
 					System.out.print(">>> ");
-					while (!sc.hasNextInt()) {
+					while (!sc.hasNextInt() && !sc.hasNextDouble()) {
 						if (sc.hasNext("back")) {
 							return -2;
 						}
@@ -415,14 +490,39 @@ public class Main {
 		}
 
 	}
+	/**
+	 * simple bubble sort to change the array in alphabetical order last name
+	 */
+	public static void sortAlphabetically() {
+		int size = classlist.size();
+		Student placeholder = classlist.get(0);
 
+		for (int i = 0; i < size; i++) {
+			for (int j = 1; j < size - 1; j++) {
+				if (classlist.get(j - 1).getLast().compareToIgnoreCase(classlist.get(j).getLast()) > 0) {
+					placeholder = classlist.get(j - 1);
+					classlist.set(j - 1, classlist.get(j));
+					classlist.set(j, placeholder);
+				} else if (classlist.get(j - 1).getLast().compareToIgnoreCase(classlist.get(j).getLast()) == 0
+						&& classlist.get(j - 1).getFirst().compareToIgnoreCase(classlist.get(j).getFirst()) > 0) {
+					placeholder = classlist.get(j - 1);
+					classlist.set(j - 1, classlist.get(j));
+					classlist.set(j, placeholder);
+				}
+			}
+		}
+	}
+
+	
 	private static void init() {
 		options = new String[][] {
-				{ "Reports", "Students", "Assignments", "Save", "Load", "Quit" },
+				{ "Reports", "Students", "Assignments", "Forgot Student Account", "Save", "Load", "Quit" },
 				{ "Class report", "Missing assignments", "At risk students"},
-				{ "Add new student", "Remove student", "Student Marks", "Forgot Student Account"}, 
+				{ "Add new student", "Remove student", "Student Marks", "Student Information"}, 
 				{ "Add assignment", "Remove assignment", "Rename assignment", "Change assignment weight", "Marks for assignment"} 
 				};
+		// so that static methods can be called
+		new Student();
 	}
 	
 	public static void save() {
