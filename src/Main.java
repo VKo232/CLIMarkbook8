@@ -250,7 +250,7 @@ public class Main {
 	
 	public static void displayAssignment() {
 		double average;
-
+		System.out.println("\n                               Assignments for this class");
 		for(int i = 0; i < Student.getAssignmentSize(); i++) {
 			average = 0;
 			for(int j = 0; j < classlist.size(); j++) {
@@ -306,6 +306,34 @@ public class Main {
 		}
 	}
 	
+	public static void displayAssignmentMarks() {
+		int index = chooseAssignment();
+		System.out.println("\n                  Marks for \"" + Student.getAssignmentName(index) + "\"");
+		int sum = 0;
+		for(int i = 0; i < classlist.size(); i++) {
+			if(classlist.get(i).getMark(index) != -1) {
+				sum += classlist.get(i).getMark(index);
+			}
+		}
+		System.out.printf("Class Average for assignment: %.2f\n" + ((double) sum / classlist.size()));
+		System.out.println("Percentage weight of final mark: " + Student.getWeight(index));
+		System.out.printf("%-20s%-20s%s\n", "Last name", "First name", "%mark received");
+		for(int i = 0; i < classlist.size(); i++) {
+			String complete;
+			if((int) classlist.get(i).getMark(index) == -1) {
+				complete = "incomplete";
+			} else {
+				complete = Double.toString(classlist.get(i).getMark(index));
+			}
+			System.out.printf("%-20s%-20s%s\n", classlist.get(i).getLast(), classlist.get(i).getFirst(), complete);
+		}
+		String again = readString("Would you like to view more assignments? (y/n)");
+		if(again.equalsIgnoreCase("y")) {
+			displayAssignmentMarks();
+		}	
+		
+	}
+	
 	
 	public static void displayOptions() {
 		int choice1, choice2;
@@ -348,7 +376,7 @@ public class Main {
 		methodCall(choice1, choice2);
 	}
 
-	
+
 	
 	private static void methodCall(int choice1, int choice2) {
 		int call = choice2;
@@ -399,7 +427,7 @@ public class Main {
 			editAssignmentWeight(); // change assignment weight
 			break;
 		case 12:
-			; // marks for individual assignment
+			displayAssignmentMarks(); // marks for individual assignment
 			break;
 		default:
 			break;
@@ -408,7 +436,25 @@ public class Main {
 	}
 
 	public static void forgotAccount() {
-		
+		String[] account = new String[4];
+		String[] prompts = {"First Name", "Last Name", "Graduating Year", "Student Number"};
+		System.out.println("Please fill in the below form to generate your account information");
+		for(int i = 0; i < 4; i++) {
+			account[i] = readString(prompts[i]);
+			if(account[i].equals("back")) {
+				return;
+			}
+		}
+		try {
+			System.out.println("Your user name is: " + account[0].toLowerCase() + "." + account[1].toLowerCase() + account[2].substring(account[2].length() - 2) + "@ycdsbk12.ca");
+			System.out.println("Your password is: " + Character.toUpperCase(account[0].charAt(0)) + Character.toLowerCase(account[1].charAt(0)) + account[3]);
+			String again = readString("Do you wish to generate more account names? (y/n)"); 
+			if(again.equalsIgnoreCase("y")) {
+				forgotAccount();
+			}
+		} catch(StringIndexOutOfBoundsException e) {
+			forgotAccount();
+		}
 	}
 	
 	/**
