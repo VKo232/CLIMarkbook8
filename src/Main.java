@@ -126,21 +126,17 @@ public class Main {
 	 */
 	public static void removeStudent() {
 		int index = chooseStudent();
-		if (index == -2) {
-			return;
+		
+		if (classlist.size() != 0) {
+		    classlist.remove(index);
 		}
-		String confirm = readString("Type \"CONFIRM\" to delete student (It cannot be recovered): ");
-		if (confirm.equals("CONFIRM")) {
-			System.out.println(classlist.get(index).getFirst() + " has been removed.");
-			classlist.remove(index);
-		}
+		
 		if (classlist.size() > 0) {
-			String again = readString("Remove more? (y/n)");
-			if (again.equalsIgnoreCase("y")) {
-				removeStudent();
-			}
-		}
-
+		    String again = readString("Remove another student? Type y/n");
+		    if (again.equals("y")) {
+		        removeStudent();
+		    } 
+		} 
 	}
 
 	/**
@@ -154,7 +150,7 @@ public class Main {
 		}
 		while (true) {
 			System.out.println("\nHere are your options");
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 3; classlist.remove(index);i++) {
 				System.out.println((i + 1) + ". " + prompt[i]);
 			}
 			int choice = (int) readDouble("What do you want to edit? ", 1, 3);
@@ -236,24 +232,15 @@ public class Main {
 	 * Calculates and displays the class average as well as individual students
 	 */
 	public static void classAverageReport() {
-
-		double sum = 0;
-		System.out.println("\n              Class Average Report");
-
-		for (int i = 0; i < classlist.size(); i++) {
-			sum += classlist.get(i).getAverage(weight, getTotalCompletion());
-		}
-
-		System.out.println("\nClass Size: " + classlist.size());
-		System.out.println("\nClass Average: " + (sum / classlist.size()));
-		System.out.println("Number of assignments: " + weight.size() + "\n");
-		System.out.printf("%-20s%-20s%-20s%s\n", "Last name", "First name", "Student number", "Average");
-
-		for (int i = 0; i < classlist.size(); i++) {
-			System.out.printf("%-20s%-20s%-20s%.2f\n", classlist.get(i).getLast(), classlist.get(i).getFirst(),
-					classlist.get(i).getStudentNumber(), classlist.get(i).getAverage(weight, getTotalCompletion()));
-		}
-
+        double average;
+        System.out.printf("%-40s\n", "Class Average Report");
+        System.out.printf("%-20s%-20s\n", "Student Name", "Student Average");
+        for (int i = 0; i < classlist.size(); i ++) {
+            classlist.get(i).getAverage(weight, getTotalCompletion());
+            average += classlist.get(i).getAverage(weight, getTotalCompletion());
+            System.out.printf("%-20s%-20s%.2f\n", classlist.get(i).getLast(), classlist.get(i).getFirst(), average);
+        }
+        
 	}
 
 	/**
@@ -262,7 +249,7 @@ public class Main {
 	 */
 	public static void missingAssignmentReport() {
 
-		boolean[] students = new boolean[classlist.size()];
+	boolean[] students = new boolean[classlist.size()];
 		Arrays.fill(students, false);
 		System.out.println("\n              Missing Assignment Report");
 
@@ -301,7 +288,7 @@ public class Main {
 
 		for (int i = 0; i < classlist.size(); i++) {
 			int missingAssignments = 0;
-			for (int j = 0; j < weight.size(); j++) {
+			finputor (int j = 0; j < weight.size(); j++) {
 				if ((int) classlist.get(i).getMark(j) == -1) {
 					missingAssignments++;
 				}
@@ -369,18 +356,20 @@ public class Main {
 	 * Displays a list of assignments and the averages
 	 */
 	public static void displayAssignment() {
-		double average;
-		System.out.println("\n                               Assignments for this class");
-		for (int i = 0; i < weight.size(); i++) {
-			average = 0;
-			for (int j = 0; j < classlist.size(); j++) {
-				if (classlist.get(j).getMark(i) >= 0) {
-					average += classlist.get(j).getMark(i);
-				}
-			}
-			average /= classlist.size();
-			System.out.printf((i + 1) + ". %-23s%-10.2f%.2f\n", assignmentName.get(i), weight.get(i), average);
-		}
+	    double average; 
+        System.out.println("\n                                           display assignment");
+        System.out.println("Class Size: " + classlist.size());
+        System.out.println("Assignments: " + assignmentName.size());
+        System.out.printf("%-20s%-20s%-20s", "Assignment Name", "Assignment Weight", "Average" );
+        for(int i = 0; i < assignmentName.size(); i++) { 
+            average = 0;
+            for(int j =0; j < classlist.size(); j++) {
+               average += classlist.get(j).getMark(i);
+            }
+            average /= classlist.size();
+        System.out.printf("%-20s%-20s%-20s", assignmentName.get(i), weight.get(i), average);
+        }
+        
 	}
 
 	/**
