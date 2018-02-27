@@ -451,7 +451,7 @@ public class Main {
 				sum += classlist.get(i).getMark(index);
 			}
 		}
-		System.out.printf("Class Average for assignment: %.2f\n" + ((double) sum / classlist.size()));
+		System.out.printf("Class Average for assignment: %.2f\n", ((double) sum / classlist.size()));
 		System.out.println("Percentage weight of final mark: " + weight.get(index) + "\n");
 		System.out.printf("%-20s%-20s%s\n", "Last name", "First name", "%mark received");
 		for (int i = 0; i < classlist.size(); i++) {
