@@ -444,6 +444,9 @@ public class Main {
 	 */
 	public static void displayAssignmentMarks() {
 		int index = chooseAssignment();
+		if(index == -2) {
+		    return;
+		}
 		System.out.println("\n                  Marks for \"" + assignmentName.get(index) + "\"");
 		double sum = 0;
 		for (int i = 0; i < classlist.size(); i++) {
