@@ -7,8 +7,9 @@ import java.io.*;
 // makes sure back escape option works
 
 /**
- * A program that helps teachers store, edit, and remove the students, their
- * marks, names it also displays class reports
+ * A program that helps teachers store, edit, and remove students, assignments, and marks.
+ * The program can display class reports, including averages and at-risk students,
+ * and can generate email and password information for students.
  *
  * @author qwertyuiop1
  *
@@ -35,10 +36,10 @@ public class Main {
 	}
 
 	/**
-	 * displays list of students and returns the class list index for the student
-	 *
-	 * @return index of student chosen
-	 */
+   	  * Displays the list of students and returns the class list index for the student.
+     	  *
+    	  * @return index of student chosen
+          */
 	public static int chooseStudent() {
 		studentList();
 		int student;
@@ -50,9 +51,11 @@ public class Main {
 	}
 
 	/**
-	 * calls chooseStudent and then displays assignments and allows user to edit
-	 * marks of that particular student checks if there are students and assignments
-	 */
+     	  * Calls chooseStudent() and then displays assignments. Asks user if they want to
+          * edit the student's mark and allows user to choose which assignment to edit.
+          * User can input a mark or input -1 for an incomplete assignment.
+          * Mark at the chosen index in the marks array of students is edited.
+          */
 	public static void editStudentMark() {
 		int choice;
 		double mark;
@@ -82,11 +85,11 @@ public class Main {
 	}
 
 	/**
-	 * displays all the assignment averages for a single student
-	 *
-	 * @param index
-	 *            int of the student in the classlist
-	 */
+          * Displays the assignments, marks, average and for a single student.
+          *
+          * @param index
+          *            index of the student in the classlist
+          */
 	public static void displayStudent(int index) {
 		System.out.println("\n                  Assignment report for: " + classlist.get(index).getFirst() + " "
 				+ classlist.get(index).getLast() + " " + classlist.get(index).getStudentNumber());
