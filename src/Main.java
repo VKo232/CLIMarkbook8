@@ -246,7 +246,7 @@ public class Main {
 
 		System.out.println("\nClass Size: " + classlist.size());
 		System.out.printf("\nClass Average: %.2f" , (sum / classlist.size()));
-		System.out.println("Number of assignments: " + weight.size() + "\n");
+		System.out.println("\nNumber of assignments: " + weight.size() + "\n");
 		System.out.printf("%-20s%-20s%-20s%s\n", "Last name", "First name", "Student number", "Average");
 
 		for (int i = 0; i < classlist.size(); i++) {
